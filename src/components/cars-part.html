@@ -1,0 +1,169 @@
+<!-- Section 4: Cars Part Detail (Interactive/Static) -->
+<section id="cars-part" class="relative py-24 md:py-32 parallax-wrapper overflow-hidden bg-[#F4F4F4]">
+
+    <!-- Modern Tech/Blueprint CSS Background -->
+    <div class="absolute inset-0 z-0 bg-[#F4F4F5] overflow-hidden">
+        <!-- Subtle tech blueprint grid -->
+        <div class="absolute inset-0"
+            style="background-image: linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px); background-size: 50px 50px; opacity: 0.8;">
+        </div>
+
+        <!-- Dynamic angled hash pattern for speed/movement feel -->
+        <div class="absolute inset-0 opacity-[0.02]"
+            style="background: repeating-linear-gradient(45deg, #000 0, #000 2px, transparent 2px, transparent 16px);">
+        </div>
+
+        <!-- Glowing accent orbs (Matching the brand primary color) -->
+        <div
+            class="absolute top-[10%] left-[-15%] w-[600px] h-[600px] bg-gradient-radial from-[#FF9D82]/20 to-transparent blur-3xl rounded-full mix-blend-multiply pointer-events-none">
+        </div>
+        <div
+            class="absolute bottom-[-10%] right-[-10%] w-[800px] h-[800px] bg-gradient-radial from-gray-300/40 to-transparent blur-3xl rounded-full mix-blend-multiply pointer-events-none">
+        </div>
+
+        <!-- Soft fade gradient overlay to keep it clean and ensure contrast for the hotspots -->
+        <div class="absolute inset-0 bg-gradient-to-t from-[#F4F4F5] via-transparent to-white/60"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Title Right Aligned (Positioned absolute top right) -->
+        <div class="absolute top-0 right-4 md:right-16 text-right z-0 opacity-90 pointer-events-none">
+            <h2
+                class="text-[4rem] md:text-[8rem] leading-[0.9] text-primary tracking-tighter mix-blend-multiply drop-shadow-sm">
+                <span class="font-light block">CARS PART</span>
+                <span class="font-bold block">DETAIL</span>
+            </h2>
+        </div>
+
+        <!-- White Car Container (Parallax tracked by GSAP in main.js) -->
+        <div class="relative w-full max-w-6xl mx-auto car-parallax-target mt-40 md:mt-56 z-10 pb-16">
+
+            <!-- White Car Image -->
+            <img src="/assets/images/cars-part-new-bmw.png" alt="Concept White Sports Car"
+                class="w-full h-auto drop-shadow-2xl mix-blend-darken relative z-10 pointer-events-none scale-105 transform origin-bottom">
+
+            <!-- HOTSPOTS -->
+
+            <!-- 1. Side Mirror (UP -> LEFT) -->
+            <div class="absolute z-30 opacity-0 group"
+                style="top: 28%; left: 24%; animation: fadeInUp 0.8s ease-out 0.2s forwards;">
+                <div
+                    class="w-2.5 h-2.5 rounded-full bg-primary absolute -left-[5px] -top-[5px] shadow-[0_0_10px_rgba(255,90,54,0.8)] z-20 hotspot-dot">
+                </div>
+                <div class="absolute w-px bg-gray-500/80 pointer-events-none origin-bottom transition-all duration-700"
+                    style="height: 120px; bottom: 0; left: 0;"></div>
+                <div class="absolute flex flex-col justify-end pointer-events-none"
+                    style="bottom: 119px; right: 0; width: 220px;">
+                    <div class="w-full border-b flex items-end pb-2 border-gray-500/80">
+                        <h4 class="text-primary font-semibold text-base md:text-lg leading-none">Side Mirror
+                        </h4>
+                    </div>
+                    <p class="text-dark/90 text-[11px] md:text-[13px] font-medium leading-relaxed mt-2 text-left">
+                        Desain membelah angin untuk mengurangi drag dan kebisingan (wind noise). Terintegrasi
+                        dengan sensor Blind Spot Monitoring (BSM) berbasis radar.</p>
+                </div>
+            </div>
+
+            <!-- 2. Braking System (DOWN -> LEFT) -->
+            <div class="absolute z-30 opacity-0 group"
+                style="top: 55%; left: 8%; animation: fadeInUp 0.8s ease-out 0.8s forwards;">
+                <div
+                    class="w-2.5 h-2.5 rounded-full bg-primary absolute -left-[5px] -top-[5px] shadow-[0_0_10px_rgba(255,90,54,0.8)] z-20 hotspot-dot">
+                </div>
+                <div class="absolute w-px bg-gray-500/80 pointer-events-none origin-top transition-all duration-700"
+                    style="height: 100px; top: 0; left: 0;"></div>
+                <div class="absolute flex flex-col justify-start pointer-events-none"
+                    style="top: 99px; right: 0; width: 220px;">
+                    <div class="w-full border-t flex items-start pt-2 border-gray-500/80">
+                        <h4 class="text-primary font-semibold text-base md:text-lg leading-none">Braking System
+                        </h4>
+                    </div>
+                    <p class="text-dark/90 text-[11px] md:text-[13px] font-medium leading-relaxed mt-1 text-left">
+                        Rotor berdiameter 380mm dengan kaliper 6-piston. Material tahan panas ekstrem untuk
+                        meminimalkan brake fade, menjamin pengereman presisi dari kecepatan tinggi.</p>
+                </div>
+            </div>
+
+            <!-- 3. Velg (Rims) (DOWN -> LEFT) -->
+            <div class="absolute z-30 opacity-0 group"
+                style="top: 65%; left: 54%; animation: fadeInUp 0.8s ease-out 1s forwards;">
+                <div
+                    class="w-2.5 h-2.5 rounded-full bg-primary absolute -left-[5px] -top-[5px] shadow-[0_0_10px_rgba(255,90,54,0.8)] z-20 hotspot-dot">
+                </div>
+                <div class="absolute w-px bg-gray-500/80 pointer-events-none origin-top transition-all duration-700"
+                    style="height: 110px; top: 0; left: 0;"></div>
+                <div class="absolute flex flex-col justify-start pointer-events-none"
+                    style="top: 109px; right: 0; width: 220px;">
+                    <div class="w-full border-t flex items-start pt-2 border-gray-500/80">
+                        <h4 class="text-primary font-semibold text-base md:text-lg leading-none">Velg (Rims)
+                        </h4>
+                    </div>
+                    <p class="text-dark/90 text-[11px] md:text-[13px] font-medium leading-relaxed mt-1 text-left">
+                        Desain aero-spoke ultra-ringan (hanya 8.5 kg per velg). Berfungsi menekan unsprung mass
+                        untuk meningkatkan respons handling dan aerodinamika kendaraan.</p>
+                </div>
+            </div>
+
+            <!-- 4. Head Lamp (UP -> RIGHT) -->
+            <div class="absolute z-30 opacity-0 group"
+                style="top: 36%; left: 74%; animation: fadeInUp 0.8s ease-out 0.4s forwards;">
+                <div
+                    class="w-2.5 h-2.5 rounded-full bg-primary absolute -left-[5px] -top-[5px] shadow-[0_0_10px_rgba(255,90,54,0.8)] z-20 hotspot-dot">
+                </div>
+                <div class="absolute w-px bg-gray-500/80 pointer-events-none origin-bottom transition-all duration-700"
+                    style="height: 80px; bottom: 0; left: 0;"></div>
+                <div class="absolute flex flex-col justify-end pointer-events-none"
+                    style="bottom: 79px; left: 0; width: 240px;">
+                    <div class="w-full border-b flex items-end pb-2 border-gray-500/80">
+                        <h4 class="text-primary font-semibold text-base md:text-lg leading-none pl-2">Head Lamp
+                        </h4>
+                    </div>
+                    <p class="text-dark/90 text-[11px] md:text-[13px] font-medium leading-relaxed mt-2 text-left pl-2">
+                        Intensitas 8000 Lumens dengan fitur auto-leveling aktif. Dilengkapi Daytime Running
+                        Light (DRL) terintegrasi untuk visibilitas maksimal di segala cuaca.</p>
+                </div>
+            </div>
+
+            <!-- 5. Engine Bay (UP -> RIGHT) -->
+            <div class="absolute z-30 opacity-0 group"
+                style="top: 25%; left: 55%; animation: fadeInUp 0.8s ease-out 0.6s forwards;">
+                <div
+                    class="w-2.5 h-2.5 rounded-full bg-primary absolute -left-[5px] -top-[5px] shadow-[0_0_10px_rgba(255,90,54,0.8)] z-20 hotspot-dot">
+                </div>
+                <div class="absolute w-px bg-gray-500/80 pointer-events-none origin-bottom transition-all duration-700"
+                    style="height: 120px; bottom: 0; left: 0;"></div>
+                <div class="absolute flex flex-col justify-end pointer-events-none"
+                    style="bottom: 119px; left: 0; width: 260px;">
+                    <div class="w-full border-b flex items-end pb-2 border-gray-500/80">
+                        <h4 class="text-primary font-semibold text-base md:text-lg leading-none pl-2">Engine Bay
+                        </h4>
+                    </div>
+                    <p class="text-dark/90 text-[11px] md:text-[13px] font-medium leading-relaxed mt-2 text-left pl-2">
+                        Menghasilkan output 450 HP dan torsi 600 Nm. Dilengkapi intake serat karbon dan
+                        pendingin ganda untuk menjaga efisiensi termal pada putaran mesin (RPM) tinggi.</p>
+                </div>
+            </div>
+
+            <!-- 6. Tire (Ban) (DOWN -> RIGHT) -->
+            <div class="absolute z-30 opacity-0 group"
+                style="top: 72%; left: 65%; animation: fadeInUp 0.8s ease-out 1.2s forwards;">
+                <div
+                    class="w-2.5 h-2.5 rounded-full bg-primary absolute -left-[5px] -top-[5px] shadow-[0_0_10px_rgba(255,90,54,0.8)] z-20 hotspot-dot">
+                </div>
+                <div class="absolute w-px bg-gray-500/80 pointer-events-none origin-top transition-all duration-700"
+                    style="height: 90px; top: 0; left: 0;"></div>
+                <div class="absolute flex flex-col justify-start pointer-events-none"
+                    style="top: 89px; left: 0; width: 240px;">
+                    <div class="w-full border-t flex items-start pt-2 border-gray-500/80">
+                        <h4 class="text-primary font-semibold text-base md:text-lg leading-none pl-2">Tire (Ban)
+                        </h4>
+                    </div>
+                    <p class="text-dark/90 text-[11px] md:text-[13px] font-medium leading-relaxed mt-1 text-left pl-2">
+                        Ukuran 255/35 R19. Dirancang khusus dengan grip asimetris untuk traksi maksimal pada
+                        aspal kering maupun basah, menunjang akselerasi instan.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

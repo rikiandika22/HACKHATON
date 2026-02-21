@@ -1,0 +1,56 @@
+<!-- Section 1: Header / Navbar -->
+<header
+    class="fixed w-full top-0 z-50 bg-white/40 backdrop-blur-xl border-b border-white/30 shadow-[0_4px_30px_rgba(0,0,0,0.05)] transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-20">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-3">
+                <img src="/assets/images/lucide-lab_tire.png" alt="Autospec Tire Icon"
+                    class="w-8 h-8 object-contain filter invert-50 sepia-100 saturate-[4000%] hue-rotate-350 brightness-110 contrast-110"
+                    style="filter: brightness(0) saturate(100%) invert(48%) sepia(87%) saturate(1478%) hue-rotate(345deg) brightness(101%) contrast(101%);" />
+                <span class="text-2xl font-semibold tracking-tight text-dark">AUTOSPEC</span>
+            </a>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex gap-8 font-semibold">
+                <a href="#" class="nav-link text-dark hover:text-primary transition-colors">HOME</a>
+                <a href="#cars-part" class="nav-link text-dark hover:text-primary transition-colors">CARS
+                    PART</a>
+            </nav>
+
+            <!-- Desk Right -->
+            <div class="flex items-center gap-4">
+                <a href="#"
+                    class="hidden md:inline-flex bg-dark text-white px-8 py-2.5 rounded-full font-bold hover:bg-gray-800 transition-colors duration-300">
+                    SIGN UP
+                </a>
+
+                <!-- Mobile Hamburger -->
+                <button @click="toggleMenu" class="md:hidden text-dark p-2 focus:outline-none">
+                    <svg x-show="!mobileMenuOpen" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                    <svg x-show="mobileMenuOpen" style="display:none;" class="w-7 h-7" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div x-show="mobileMenuOpen" x-transition
+        class="md:hidden bg-white/80 backdrop-blur-xl border-b border-white/30 absolute w-full left-0 top-20 shadow-[0_4px_30px_rgba(0,0,0,0.05)]"
+        style="display:none;">
+        <div class="px-6 py-6 flex flex-col gap-5 text-center">
+            <a href="#" @click="closeMenu" class="text-lg font-bold text-dark hover:text-primary">HOME</a>
+            <a href="#cars-part" @click="closeMenu" class="text-lg font-bold text-dark hover:text-primary">CARS
+                PART</a>
+            <a href="#" class="mt-2 bg-dark text-white px-6 py-3 rounded-full font-bold hover:bg-gray-800">SIGN
+                UP</a>
+        </div>
+    </div>
+</header>

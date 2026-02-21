@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUTOSPEC - Chat AI</title>
+    <!-- Favicon & Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script type="module" src="/src/js/main.js"></script>
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-[#F0F2F5] text-dark h-screen overflow-hidden flex" x-data="chatInterface()">
+
+    <!-- Sidebar (Matches Mockup perfectly) -->
+    <aside class="w-[72px] border-r border-gray-300 h-full flex flex-col items-center py-6 gap-6 shrink-0 z-20">
+        <!-- Logo/Hamburger Icon -->
+        <button class="text-gray-600 hover:text-dark">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                </path>
+            </svg>
+        </button>
+        <!-- New Chat Icon -->
+        <button @click="resetChat()" class="text-gray-600 hover:text-dark mt-2" title="New Chat">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+        </button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-full relative">
+
+        <!-- Header -->
+        <header class="h-20 px-8 flex items-center justify-between shrink-0">
+            <!-- Left: Logo (visible in filled state) -->
+            <div class="flex-1 flex items-center">
+                <div x-show="isChatFilled" class="flex items-center gap-3" x-cloak>
+                    <img src="/assets/images/lucide-lab_tire.png" alt="Autospec Logo"
+                        class="w-7 h-7 filter invert-50 sepia-100 saturate-[4000%] hue-rotate-350 brightness-110 contrast-110"
+                        style="filter: brightness(0) saturate(100%) invert(48%) sepia(87%) saturate(1478%) hue-rotate(345deg) brightness(101%) contrast(101%);" />
+                    <span class="text-lg font-bold tracking-tight text-dark">AUTOSPEC</span>
+                </div>
+            </div>
+
+            <!-- Center: Topic Title (visible only in filled state) -->
+            <div class="flex-1 flex justify-center">
+                <h1 x-show="isChatFilled" class="font-bold text-gray-800 text-base md:text-[17px] text-center" x-cloak>
+                    Cek Spek Mesin</h1>
+            </div>
+
+            <!-- Right: Profile Icon -->
+            <div class="flex-1 flex justify-end">
+                <button class="text-gray-600 hover:text-dark">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Empty State Container -->
+        <div x-show="!isChatFilled"
+            class="flex-1 flex flex-col items-center justify-center px-4 md:px-8 w-full max-w-4xl mx-auto -mt-10"
+            x-cloak>
+
+            <div class="flex items-center gap-3 mb-6">
+                <img src="/assets/images/lucide-lab_tire.png"
+                    class="w-10 h-10 filter invert-50 sepia-100 saturate-[4000%] hue-rotate-350 brightness-110 contrast-110"
+                    style="filter: brightness(0) saturate(100%) invert(48%) sepia(87%) saturate(1478%) hue-rotate(345deg) brightness(101%) contrast(101%);">
+                <h2 class="text-2xl md:text-3xl tracking-tight text-dark font-semibold">AUTOSPEC</h2>
+            </div>
+
+            <p class="text-gray-500 font-medium mb-10 text-center text-[15.5px]">Halo! Mobil apa yang ingin kita bongkar
+                spesifikasi lengkapnya hari ini?</p>
+
+            <!-- Big Input Box for Empty State -->
+            <div class="w-full bg-transparent border border-gray-300 rounded-[1.5rem] p-4 shadow-sm relative mb-12 flex flex-col"
+                style="min-height: 150px;">
+                <textarea x-model="inputText" @keydown.enter.prevent="sendMessage()"
+                    class="w-full bg-transparent resize-none outline-none text-gray-800 placeholder-gray-500 font-medium px-2 py-1 flex-1 text-[15px]"
+                    placeholder="Tanya apapun"></textarea>
+
+                <div class="flex justify-between items-end mt-2 px-1">
+                    <div class="flex items-center gap-2 text-gray-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                            </path>
+                        </svg>
+                        <span class="text-[13px] font-semibold">Gemini Flash</span>
+                    </div>
+                    <button @click="sendMessage()"
+                        class="bg-[#FF5A36] text-white p-2.5 rounded-full hover:bg-orange-600 transition-colors">
+                        <svg class="w-5 h-5 -rotate-45 translate-x-[2px] -translate-y-[2px]" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Recommendations Grid -->
+            <div class="w-full">
+                <h3 class="text-gray-700 font-bold mb-4 px-1 text-[15px]">Rekomendasi Topik</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+                    <button
+                        @click="setDirectInput('Tolong cek spek mesin Toyota Supra dong. Katanya 3.0L twin-turbo itu tenaganya gede banget, beneran nyampe 300 cc? Boros bensin gak buat harian?')"
+                        class="bg-[#FFDCCB] p-5 rounded-2xl text-left hover:brightness-95 transition-all outline-none h-full flex flex-col">
+                        <div class="flex items-center gap-2.5 font-bold text-gray-900 mb-2.5 text-[14px]">
+                            <span class="bg-white p-1.5 rounded-full shadow-sm">
+                                <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                                    </path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                            </span>
+                            Ekstraksi Mesin
+                        </div>
+                        <p class="text-[13px] text-gray-700 leading-snug font-medium pr-2">Cek tenaga (HP), torsi, dan
+                            konversi cc secara instan.</p>
+                    </button>
+
+                    <button @click="setDirectInput('Berapa panjang dan lebar Honda Civic RS 2023?')"
+                        class="bg-[#FFDCCB] p-5 rounded-2xl text-left hover:brightness-95 transition-all outline-none h-full flex flex-col">
+                        <div class="flex items-center gap-2.5 font-bold text-gray-900 mb-2.5 text-[14px]">
+                            <span class="bg-white p-1.5 rounded-full shadow-sm">
+                                <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4">
+                                    </path>
+                                </svg>
+                            </span>
+                            Dimensi Bodi
+                        </div>
+                        <p class="text-[13px] text-gray-700 leading-snug font-medium pr-2">Ketahui panjang, lebar, dan
+                            wheelbase untuk fitment.</p>
+                    </button>
+
+                    <button @click="setDirectInput('Berapa konsumsi bensin rata-rata Mazda CX-5 di dalam kota?')"
+                        class="bg-[#FFDCCB] p-5 rounded-2xl text-left hover:brightness-95 transition-all outline-none h-full flex flex-col">
+                        <div class="flex items-center gap-2.5 font-bold text-gray-900 mb-2.5 text-[14px]">
+                            <span class="bg-white p-1.5 rounded-full shadow-sm">
+                                <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z">
+                                    </path>
+                                </svg>
+                            </span>
+                            Konsumsi BBM
+                        </div>
+                        <p class="text-[13px] text-gray-700 leading-snug font-medium pr-2">Analisis efisiensi bahan
+                            bakar dalam dan luar kota (MPG).</p>
+                    </button>
+
+                    <button @click="setDirectInput('Apakah velg ring 18 muat di Brio?')"
+                        class="bg-[#FFDCCB] p-5 rounded-2xl text-left hover:brightness-95 transition-all outline-none h-full flex flex-col">
+                        <div class="flex items-center gap-2.5 font-bold text-gray-900 mb-2.5 text-[14px]">
+                            <span class="bg-white p-1.5 rounded-full shadow-sm">
+                                <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                                    </path>
+                                </svg>
+                            </span>
+                            Kompatibilitas Parts
+                        </div>
+                        <p class="text-[13px] text-gray-700 leading-snug font-medium pr-2">Cek kecocokan komponen
+                            aftermarket dengan spesifikasi bawaan pabrik.</p>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Filled State Container -->
+        <div x-show="isChatFilled" class="flex-1 flex flex-col w-full max-w-[850px] mx-auto relative pt-4" x-cloak>
+
+            <!-- Chat History Area -->
+            <div class="flex-1 overflow-y-auto w-full px-4 pb-40 flex flex-col gap-6" id="chat-container">
+                <template x-for="msg in messages" :key="msg.id">
+                    <div class="flex w-full"
+                        :class="{'justify-end': msg.role === 'user', 'justify-start': msg.role === 'ai'}">
+
+                        <!-- User Bubble -->
+                        <div x-show="msg.role === 'user'"
+                            class="bg-[#FFDCCB] text-gray-900 px-6 py-4 rounded-2xl rounded-tr-none max-w-[80%] shadow-sm">
+                            <p class="text-[15px] font-medium leading-[1.6]" x-text="msg.content"></p>
+                        </div>
+
+                        <!-- AI Bubble -->
+                        <div x-show="msg.role === 'ai'"
+                            class="bg-[#E5E7EB] text-gray-900 px-6 py-4 rounded-2xl rounded-tl-none max-w-[80%] shadow-sm">
+                            <p class="text-[15px] font-medium leading-[1.6]" x-text="msg.content"></p>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Status indicator -->
+                <div x-show="isTyping" class="flex w-full justify-start mt-2 pb-2">
+                    <div
+                        class="bg-[#E5E7EB] text-dark px-5 py-4 rounded-2xl rounded-tl-none flex items-center gap-1.5 shadow-sm">
+                        <div class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce"></div>
+                        <div class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0.1s">
+                        </div>
+                        <div class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0.2s">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sticky Input Box for Filled State (bottom) -->
+            <!-- We will absolute position it at the bottom. -->
+            <div class="absolute bottom-10 left-0 w-full px-4 bg-gradient-to-t from-[#F0F2F5] via-[#F0F2F5] pt-4">
+                <div class="w-full bg-transparent border border-gray-300 rounded-[1.5rem] p-3 shadow-sm relative flex flex-col justify-between"
+                    style="min-height: 120px;">
+                    <textarea x-model="inputText" @keydown.enter.prevent="sendMessage()"
+                        class="w-full bg-transparent resize-none outline-none text-gray-800 placeholder-gray-500 font-medium px-3 py-1 flex-1 text-[15px]"
+                        placeholder="Tanyakan Spek Mobilmu...."></textarea>
+
+                    <div class="flex justify-between items-end mt-1 px-2">
+                        <div class="flex items-center gap-2 text-gray-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                                </path>
+                            </svg>
+                            <span class="text-[13px] font-semibold">Gemini Flash</span>
+                        </div>
+                        <button @click="sendMessage()"
+                            class="bg-[#FF5A36] text-white p-2.5 rounded-full hover:bg-orange-600 transition-colors">
+                            <svg class="w-5 h-5 -rotate-45 translate-x-[2px] -translate-y-[2px]" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('chatInterface', () => ({
+                isChatFilled: false,
+                inputText: '',
+                isTyping: false,
+                messages: [],
+
+                resetChat() {
+                    this.isChatFilled = false;
+                    this.messages = [];
+                    this.inputText = '';
+                },
+
+                setDirectInput(text) {
+                    this.inputText = text;
+                    this.$nextTick(() => {
+                        this.sendMessage();
+                    });
+                },
+
+                sendMessage() {
+                    if (!this.inputText.trim() || this.isTyping) return;
+
+                    if (!this.isChatFilled) {
+                        this.isChatFilled = true;
+                    }
+
+                    const query = this.inputText.trim();
+                    const userMsg = { id: Date.now(), role: 'user', content: query };
+                    this.messages.push(userMsg);
+
+                    this.inputText = '';
+                    this.isTyping = true;
+
+                    this.scrollToBottom();
+
+                    // Mock AI response
+                    setTimeout(() => {
+                        let aiResponse = "Saya adalah AI dari AUTOSPEC. Pembaruan Anda berhasil masuk, referensi desain UI (empty dan filled state) telah diterapkan sempurna.";
+
+                        if (query.toLowerCase().includes('supra') || query.toLowerCase().includes('ekstraksi')) {
+                            // Mimicking exact text from the screenshot
+                            aiResponse = "Berdasarkan data pabrikan, Toyota Supra dibekali mesin legendaris 6-silinder segaris (In-line 6). Sistem kami mendeteksi anomali pada pertanyaan Anda dan telah menormalisasi kapasitas mesin menjadi 3000 cc (3.0L). Tenaga standar pabriknya adalah 320 Horsepower (HP) berkat dukungan Twin-Turbo. Untuk efisiensi penggunaan harian (City MPG), konsumsinya berada di kisaran 17 MPG.";
+                        } else if (query.toLowerCase().includes('civic') || query.toLowerCase().includes('dimensi')) {
+                            aiResponse = "Honda Civic RS 2023 memiliki panjang keseluruhan 4.678 mm, lebar 1.802 mm, dan tinggi 1.415 mm. Jarak sumbu rodanya (wheelbase) adalah 2.735 mm yang menjanjikan legroom luas.";
+                        } else if (query.toLowerCase().includes('bbm') || query.toLowerCase().includes('mazda')) {
+                            aiResponse = "Mazda CX-5 (2023) 2.5L FWD memiliki efisiensi bahan bakar rata-rata sekitar 24 MPG (sekitar 10,2 km/L) untuk rute dalam kota, dan 30 MPG (sekitar 12,7 km/L) untuk rute jalan tol.";
+                        } else if (query.toLowerCase().includes('velg') || query.toLowerCase().includes('brio') || query.toLowerCase().includes('kompatibilitas')) {
+                            aiResponse = "Secara teknis, velg Ring 18 (R18) bisa dipasang di Honda Brio, namun ini tergolong 'over-spec' untuk harian. Anda harus menggunakan profil ban sangat tipis (misal 205/35 R18) agar tidak menggesek spakbor. Namun perlu diingat hal ini akan drastis mengurangi kenyamanan bantingan suspensi dan memberatkan putaran mesin awal.";
+                        }
+
+                        this.messages.push({ id: Date.now(), role: 'ai', content: aiResponse });
+                        this.isTyping = false;
+
+                        this.scrollToBottom();
+                    }, 1200);
+                },
+
+                scrollToBottom() {
+                    this.$nextTick(() => {
+                        const container = document.getElementById('chat-container');
+                        if (container) {
+                            container.scrollTop = container.scrollHeight;
+                        }
+                    });
+                }
+            }));
+        });
+    </script>
+</body>
+
+</html>
