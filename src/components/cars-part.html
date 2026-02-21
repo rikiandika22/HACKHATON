@@ -1,169 +1,173 @@
 <!-- Section 4: Cars Part Detail (Interactive/Static) -->
-<section id="cars-part" class="relative py-24 md:py-32 parallax-wrapper overflow-hidden bg-[#F4F4F4]">
+<section id="cars-part" class="relative py-24 md:py-32 parallax-wrapper bg-[#F4F4F5]">
 
-    <!-- Modern Tech/Blueprint CSS Background -->
-    <div class="absolute inset-0 z-0 bg-[#F4F4F5] overflow-hidden">
+    <!-- Fixed subtle grid pattern background -->
+    <div class="absolute inset-0 z-0 bg-[#F4F4F5] overflow-hidden mix-blend-multiply opacity-[0.85]">
         <!-- Subtle tech blueprint grid -->
         <div class="absolute inset-0"
-            style="background-image: linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px); background-size: 50px 50px; opacity: 0.8;">
+            style="background-image: linear-gradient(#d1d5db 1px, transparent 1px), linear-gradient(90deg, #d1d5db 1px, transparent 1px); background-size: 60px 60px; opacity: 0.5;">
         </div>
-
-        <!-- Dynamic angled hash pattern for speed/movement feel -->
-        <div class="absolute inset-0 opacity-[0.02]"
-            style="background: repeating-linear-gradient(45deg, #000 0, #000 2px, transparent 2px, transparent 16px);">
-        </div>
-
-        <!-- Glowing accent orbs (Matching the brand primary color) -->
+        <!-- Glowing accent orb top right (Matching brand primary) -->
         <div
-            class="absolute top-[10%] left-[-15%] w-[600px] h-[600px] bg-gradient-radial from-[#FF9D82]/20 to-transparent blur-3xl rounded-full mix-blend-multiply pointer-events-none">
+            class="absolute top-[-5%] right-[-5%] w-[600px] h-[600px] bg-gradient-radial from-[#FF9D82]/30 to-transparent blur-3xl rounded-full mix-blend-multiply pointer-events-none">
         </div>
-        <div
-            class="absolute bottom-[-10%] right-[-10%] w-[800px] h-[800px] bg-gradient-radial from-gray-300/40 to-transparent blur-3xl rounded-full mix-blend-multiply pointer-events-none">
-        </div>
-
-        <!-- Soft fade gradient overlay to keep it clean and ensure contrast for the hotspots -->
-        <div class="absolute inset-0 bg-gradient-to-t from-[#F4F4F5] via-transparent to-white/60"></div>
     </div>
 
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Title Right Aligned (Positioned absolute top right) -->
-        <div class="absolute top-0 right-4 md:right-16 text-right z-0 opacity-90 pointer-events-none">
+    <div class="relative z-10 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+        <!-- Title Center Aligned -->
+        <div class="w-full text-center z-20 pointer-events-none mb-10 cars-part-title-anim">
             <h2
-                class="text-[4rem] md:text-[8rem] leading-[0.9] text-primary tracking-tighter mix-blend-multiply drop-shadow-sm">
-                <span class="font-light block">CARS PART</span>
-                <span class="font-bold block">DETAIL</span>
+                class="text-[3.5rem] sm:text-[4.5rem] md:text-[6rem] lg:text-[7.5rem] leading-[0.9] text-primary tracking-tighter drop-shadow-sm font-light">
+                CARS PART <span class="font-bold">DETAIL</span>
             </h2>
         </div>
 
-        <!-- White Car Container (Parallax tracked by GSAP in main.js) -->
-        <div class="relative w-full max-w-6xl mx-auto car-parallax-target mt-40 md:mt-56 z-10 pb-16">
+        <!-- Central Car Container relative for absolute SVG tracking -->
+        <div
+            class="relative w-full h-auto lg:aspect-[21/9] flex flex-col lg:flex-row items-center justify-center car-parallax-target mt-4 lg:mt-10">
 
-            <!-- White Car Image -->
-            <img src="/assets/images/cars-part-new-bmw.png" alt="Concept White Sports Car"
-                class="w-full h-auto drop-shadow-2xl mix-blend-darken relative z-10 pointer-events-none scale-105 transform origin-bottom">
+            <!-- Raw Car Image without Text -->
+            <img src="/assets/images/cars-part-new-bmw-v5.png" alt="BMW Cars Part Detail"
+                class="w-[95%] md:w-[75%] lg:w-[75%] h-auto drop-shadow-xl relative z-10 pointer-events-none scale-105 transform origin-center">
 
-            <!-- HOTSPOTS -->
+            <!-- SVG Line Connections (Reinstated, hidden on mobile) -->
+            <svg class="hidden lg:block absolute inset-0 w-full h-full pointer-events-none z-0"
+                xmlns="http://www.w3.org/2000/svg">
+                <!-- Definition for orange dot marker -->
+                <defs>
+                    <marker id="orangeDotStart" markerWidth="8" markerHeight="8" refX="4" refY="4">
+                        <circle cx="4" cy="4" r="4" fill="#FF5A36" />
+                    </marker>
+                </defs>
 
-            <!-- 1. Side Mirror (UP -> LEFT) -->
-            <div class="absolute z-30 opacity-0 group"
-                style="top: 28%; left: 24%; animation: fadeInUp 0.8s ease-out 0.2s forwards;">
-                <div
-                    class="w-2.5 h-2.5 rounded-full bg-primary absolute -left-[5px] -top-[5px] shadow-[0_0_10px_rgba(255,90,54,0.8)] z-20 hotspot-dot">
-                </div>
-                <div class="absolute w-px bg-gray-500/80 pointer-events-none origin-bottom transition-all duration-700"
-                    style="height: 120px; bottom: 0; left: 0;"></div>
-                <div class="absolute flex flex-col justify-end pointer-events-none"
-                    style="bottom: 119px; right: 0; width: 220px;">
-                    <div class="w-full border-b flex items-end pb-2 border-gray-500/80">
-                        <h4 class="text-primary font-semibold text-base md:text-lg leading-none">Side Mirror
-                        </h4>
+                <!-- 1. Velg (Rims) (Left Middle) -->
+                <path class="draw-line-anim" d="M 8% 48% L 15% 48% L 29% 55%" fill="none" stroke="#6b7280"
+                    stroke-width="1.5" marker-start="url(#orangeDotStart)" />
+                <!-- 2. Braking System (Left Bottom) -->
+                <path class="draw-line-anim" d="M 12% 90% L 20% 90% L 48% 68%" fill="none" stroke="#6b7280"
+                    stroke-width="1.5" marker-start="url(#orangeDotStart)" />
+                <!-- 3. Side Mirror (Top Left) -->
+                <path class="draw-line-anim" d="M 28% 10% L 28% 38% L 36.5% 38%" fill="none" stroke="#6b7280"
+                    stroke-width="1.5" marker-start="url(#orangeDotStart)" />
+                <!-- 4. Head Lamp (Top Right) -->
+                <path class="draw-line-anim" d="M 76% 15% L 57% 53%" fill="none" stroke="#6b7280" stroke-width="1.5"
+                    marker-start="url(#orangeDotStart)" />
+                <!-- 5. Engine Bay (Middle Right) -->
+                <path class="draw-line-anim" d="M 85% 45% L 62% 47%" fill="none" stroke="#6b7280" stroke-width="1.5"
+                    marker-start="url(#orangeDotStart)" />
+                <!-- 6. Tire (Ban) (Bottom Right) -->
+                <path class="draw-line-anim" d="M 75% 88% L 50% 88% L 47% 76%" fill="none" stroke="#6b7280"
+                    stroke-width="1.5" marker-start="url(#orangeDotStart)" />
+            </svg>
+
+            <!-- GLASSMORPHIC TEXT BLOCKS CONTAINER -->
+            <!-- Mobile: Static grid below car. Desktop: Absolute overlay -->
+            <div
+                class="static lg:absolute inset-0 z-20 w-full h-auto lg:h-full pointer-events-none mt-8 lg:mt-0 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 px-4 sm:px-8 lg:px-0 lg:block">
+
+                <!-- 1. Velg (Rims) -->
+                <div class="relative lg:absolute w-full lg:w-[15%] text-left hotspot-text-anim pointer-events-auto"
+                    style="--lg-top: 36%; --lg-left: -6%;">
+                    <div
+                        class="bg-gray-200/40 backdrop-blur-md rounded-2xl p-4 lg:p-4 border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] h-full">
+                        <h4 class="text-primary font-bold text-[15px] md:text-base lg:text-lg leading-tight mb-2">Velg
+                            (Rims)</h4>
+                        <p class="text-gray-800 text-[12px] md:text-[13px] font-medium leading-relaxed">
+                            Desain aero-spoke ultra-ringan (hanya 8.5 kg per velg). Berfungsi menekan unsprung mass
+                            untuk meningkatkan respons handling dan aerodinamika kendaraan.
+                        </p>
                     </div>
-                    <p class="text-dark/90 text-[11px] md:text-[13px] font-medium leading-relaxed mt-2 text-left">
-                        Desain membelah angin untuk mengurangi drag dan kebisingan (wind noise). Terintegrasi
-                        dengan sensor Blind Spot Monitoring (BSM) berbasis radar.</p>
                 </div>
-            </div>
 
-            <!-- 2. Braking System (DOWN -> LEFT) -->
-            <div class="absolute z-30 opacity-0 group"
-                style="top: 55%; left: 8%; animation: fadeInUp 0.8s ease-out 0.8s forwards;">
-                <div
-                    class="w-2.5 h-2.5 rounded-full bg-primary absolute -left-[5px] -top-[5px] shadow-[0_0_10px_rgba(255,90,54,0.8)] z-20 hotspot-dot">
-                </div>
-                <div class="absolute w-px bg-gray-500/80 pointer-events-none origin-top transition-all duration-700"
-                    style="height: 100px; top: 0; left: 0;"></div>
-                <div class="absolute flex flex-col justify-start pointer-events-none"
-                    style="top: 99px; right: 0; width: 220px;">
-                    <div class="w-full border-t flex items-start pt-2 border-gray-500/80">
-                        <h4 class="text-primary font-semibold text-base md:text-lg leading-none">Braking System
-                        </h4>
+                <!-- 2. Braking System -->
+                <div class="relative lg:absolute w-full lg:w-[35%] text-left hotspot-text-anim pointer-events-auto"
+                    style="--lg-top: 88%; --lg-left: 8%;">
+                    <div
+                        class="bg-gray-200/40 backdrop-blur-md rounded-2xl p-4 lg:p-4 border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] h-full">
+                        <h4 class="text-primary font-bold text-[15px] md:text-base lg:text-lg leading-tight mb-2">
+                            Braking System</h4>
+                        <p class="text-gray-800 text-[12px] md:text-[13px] font-medium leading-relaxed">
+                            Rotor berdiameter 380mm dengan kaliper 6-piston. Material tahan panas ekstrem untuk
+                            meminimalkan brake fade, menjamin pengereman presisi dari kecepatan tinggi.
+                        </p>
                     </div>
-                    <p class="text-dark/90 text-[11px] md:text-[13px] font-medium leading-relaxed mt-1 text-left">
-                        Rotor berdiameter 380mm dengan kaliper 6-piston. Material tahan panas ekstrem untuk
-                        meminimalkan brake fade, menjamin pengereman presisi dari kecepatan tinggi.</p>
                 </div>
-            </div>
 
-            <!-- 3. Velg (Rims) (DOWN -> LEFT) -->
-            <div class="absolute z-30 opacity-0 group"
-                style="top: 65%; left: 54%; animation: fadeInUp 0.8s ease-out 1s forwards;">
-                <div
-                    class="w-2.5 h-2.5 rounded-full bg-primary absolute -left-[5px] -top-[5px] shadow-[0_0_10px_rgba(255,90,54,0.8)] z-20 hotspot-dot">
-                </div>
-                <div class="absolute w-px bg-gray-500/80 pointer-events-none origin-top transition-all duration-700"
-                    style="height: 110px; top: 0; left: 0;"></div>
-                <div class="absolute flex flex-col justify-start pointer-events-none"
-                    style="top: 109px; right: 0; width: 220px;">
-                    <div class="w-full border-t flex items-start pt-2 border-gray-500/80">
-                        <h4 class="text-primary font-semibold text-base md:text-lg leading-none">Velg (Rims)
-                        </h4>
+                <!-- 3. Side Mirror -->
+                <div class="relative lg:absolute w-full lg:w-[32%] text-left hotspot-text-anim pointer-events-auto"
+                    style="--lg-top: 2%; --lg-left: 23%;">
+                    <div
+                        class="bg-gray-200/40 backdrop-blur-md rounded-2xl p-4 lg:p-4 border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] h-full">
+                        <h4 class="text-primary font-bold text-[15px] md:text-base lg:text-lg leading-tight mb-1">Side
+                            Mirror</h4>
+                        <p class="text-gray-800 text-[12px] md:text-[13px] font-medium leading-relaxed">
+                            Desain membelah angin untuk mengurangi drag dan kebisingan (wind noise). Terintegrasi dengan
+                            sensor Blind Spot Monitoring (BSM) berbasis radar.
+                        </p>
                     </div>
-                    <p class="text-dark/90 text-[11px] md:text-[13px] font-medium leading-relaxed mt-1 text-left">
-                        Desain aero-spoke ultra-ringan (hanya 8.5 kg per velg). Berfungsi menekan unsprung mass
-                        untuk meningkatkan respons handling dan aerodinamika kendaraan.</p>
                 </div>
-            </div>
 
-            <!-- 4. Head Lamp (UP -> RIGHT) -->
-            <div class="absolute z-30 opacity-0 group"
-                style="top: 36%; left: 74%; animation: fadeInUp 0.8s ease-out 0.4s forwards;">
-                <div
-                    class="w-2.5 h-2.5 rounded-full bg-primary absolute -left-[5px] -top-[5px] shadow-[0_0_10px_rgba(255,90,54,0.8)] z-20 hotspot-dot">
-                </div>
-                <div class="absolute w-px bg-gray-500/80 pointer-events-none origin-bottom transition-all duration-700"
-                    style="height: 80px; bottom: 0; left: 0;"></div>
-                <div class="absolute flex flex-col justify-end pointer-events-none"
-                    style="bottom: 79px; left: 0; width: 240px;">
-                    <div class="w-full border-b flex items-end pb-2 border-gray-500/80">
-                        <h4 class="text-primary font-semibold text-base md:text-lg leading-none pl-2">Head Lamp
-                        </h4>
+                <!-- 4. Head Lamp -->
+                <div class="relative lg:absolute w-full lg:w-[26%] text-left hotspot-text-anim pointer-events-auto"
+                    style="--lg-top: 10%; --lg-left: 75%;">
+                    <div
+                        class="bg-gray-200/40 backdrop-blur-md rounded-2xl p-4 lg:p-4 border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] h-full">
+                        <h4 class="text-primary font-bold text-[15px] md:text-base lg:text-lg leading-tight mb-1">Head
+                            Lamp</h4>
+                        <p class="text-gray-800 text-[12px] md:text-[13px] font-medium leading-relaxed">
+                            Intensitas 8000 Lumens dengan fitur auto-leveling aktif. Dilengkapi Daytime Running Light
+                            (DRL) terintegrasi untuk visibilitas maksimal di segala cuaca.
+                        </p>
                     </div>
-                    <p class="text-dark/90 text-[11px] md:text-[13px] font-medium leading-relaxed mt-2 text-left pl-2">
-                        Intensitas 8000 Lumens dengan fitur auto-leveling aktif. Dilengkapi Daytime Running
-                        Light (DRL) terintegrasi untuk visibilitas maksimal di segala cuaca.</p>
                 </div>
-            </div>
 
-            <!-- 5. Engine Bay (UP -> RIGHT) -->
-            <div class="absolute z-30 opacity-0 group"
-                style="top: 25%; left: 55%; animation: fadeInUp 0.8s ease-out 0.6s forwards;">
-                <div
-                    class="w-2.5 h-2.5 rounded-full bg-primary absolute -left-[5px] -top-[5px] shadow-[0_0_10px_rgba(255,90,54,0.8)] z-20 hotspot-dot">
-                </div>
-                <div class="absolute w-px bg-gray-500/80 pointer-events-none origin-bottom transition-all duration-700"
-                    style="height: 120px; bottom: 0; left: 0;"></div>
-                <div class="absolute flex flex-col justify-end pointer-events-none"
-                    style="bottom: 119px; left: 0; width: 260px;">
-                    <div class="w-full border-b flex items-end pb-2 border-gray-500/80">
-                        <h4 class="text-primary font-semibold text-base md:text-lg leading-none pl-2">Engine Bay
-                        </h4>
+                <!-- 5. Engine Bay -->
+                <div class="relative lg:absolute w-full lg:w-[22%] text-left hotspot-text-anim pointer-events-auto"
+                    style="--lg-top: 41%; --lg-left: 85%;">
+                    <div
+                        class="bg-gray-200/40 backdrop-blur-md rounded-2xl p-4 lg:p-4 border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] h-full">
+                        <h4 class="text-primary font-bold text-[15px] md:text-base lg:text-lg leading-tight mb-1">Engine
+                            Bay</h4>
+                        <p class="text-gray-800 text-[12px] md:text-[13px] font-medium leading-relaxed">
+                            Menghasilkan output 450 HP dan torsi 600 Nm. Dilengkapi intake serat karbon dan pendingin
+                            ganda untuk menjaga efisiensi termal pada putaran mesin (RPM) tinggi.
+                        </p>
                     </div>
-                    <p class="text-dark/90 text-[11px] md:text-[13px] font-medium leading-relaxed mt-2 text-left pl-2">
-                        Menghasilkan output 450 HP dan torsi 600 Nm. Dilengkapi intake serat karbon dan
-                        pendingin ganda untuk menjaga efisiensi termal pada putaran mesin (RPM) tinggi.</p>
                 </div>
-            </div>
 
-            <!-- 6. Tire (Ban) (DOWN -> RIGHT) -->
-            <div class="absolute z-30 opacity-0 group"
-                style="top: 72%; left: 65%; animation: fadeInUp 0.8s ease-out 1.2s forwards;">
-                <div
-                    class="w-2.5 h-2.5 rounded-full bg-primary absolute -left-[5px] -top-[5px] shadow-[0_0_10px_rgba(255,90,54,0.8)] z-20 hotspot-dot">
-                </div>
-                <div class="absolute w-px bg-gray-500/80 pointer-events-none origin-top transition-all duration-700"
-                    style="height: 90px; top: 0; left: 0;"></div>
-                <div class="absolute flex flex-col justify-start pointer-events-none"
-                    style="top: 89px; left: 0; width: 240px;">
-                    <div class="w-full border-t flex items-start pt-2 border-gray-500/80">
-                        <h4 class="text-primary font-semibold text-base md:text-lg leading-none pl-2">Tire (Ban)
-                        </h4>
+                <!-- 6. Tire (Ban) -->
+                <div class="relative lg:absolute w-full lg:w-[32%] text-left hotspot-text-anim pointer-events-auto"
+                    style="--lg-top: 86%; --lg-left: 72%;">
+                    <div
+                        class="bg-gray-200/40 backdrop-blur-md rounded-2xl p-4 lg:p-4 border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] h-full">
+                        <h4 class="text-primary font-bold text-[15px] md:text-base lg:text-lg leading-tight mb-1">Tire
+                            (Ban)</h4>
+                        <p class="text-gray-800 text-[12px] md:text-[13px] font-medium leading-relaxed">
+                            Ukuran 255/35 R19. Dirancang khusus dengan grip asimetris untuk traksi maksimal pada aspal
+                            kering maupun basah, menunjang akselerasi instan.
+                        </p>
                     </div>
-                    <p class="text-dark/90 text-[11px] md:text-[13px] font-medium leading-relaxed mt-1 text-left pl-2">
-                        Ukuran 255/35 R19. Dirancang khusus dengan grip asimetris untuk traksi maksimal pada
-                        aspal kering maupun basah, menunjang akselerasi instan.</p>
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
+    <!-- Wave Transition to CTA Section -->
+    <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-[0] z-20">
+        <svg class="relative block w-[calc(100%+1.3px)] h-[50px] md:h-[90px]" data-name="Layer 1"
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path
+                d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V0C73.47,31.78,145.41,64.71,219.46,72.63,254.67,76.4,289.47,75.46,321.39,56.44Z"
+                fill="#F8F9FA"></path>
+        </svg>
+    </div>
 </section>
+<!-- Dynamic positioning script for desktop view only -->
+<style>
+    @media (min-width: 1024px) {
+        .hotspot-text-anim {
+            top: var(--lg-top);
+            left: var(--lg-left);
+        }
+    }
+</style>

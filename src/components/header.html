@@ -1,14 +1,14 @@
 <!-- Section 1: Header / Navbar -->
 <header
-    class="fixed w-full top-0 z-50 bg-white/40 backdrop-blur-xl border-b border-white/30 shadow-[0_4px_30px_rgba(0,0,0,0.05)] transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-20">
+    class="fixed z-50 top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-4xl bg-white/20 backdrop-blur-md rounded-full border border-white/40 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] transition-all duration-300">
+    <div class="px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
             <!-- Logo -->
             <a href="#" class="flex items-center gap-3">
                 <img src="/assets/images/lucide-lab_tire.png" alt="Autospec Tire Icon"
-                    class="w-8 h-8 object-contain filter invert-50 sepia-100 saturate-[4000%] hue-rotate-350 brightness-110 contrast-110"
+                    class="brand-logo-anim w-8 h-8 object-contain filter invert-50 sepia-100 saturate-[4000%] hue-rotate-350 brightness-110 contrast-110"
                     style="filter: brightness(0) saturate(100%) invert(48%) sepia(87%) saturate(1478%) hue-rotate(345deg) brightness(101%) contrast(101%);" />
-                <span class="text-2xl font-semibold tracking-tight text-dark">AUTOSPEC</span>
+                <span class="text-xl md:text-2xl font-semibold tracking-tight text-dark">AUTOSPEC</span>
             </a>
 
             <!-- Desktop Nav -->
@@ -20,7 +20,7 @@
 
             <!-- Desk Right -->
             <div class="flex items-center gap-4">
-                <a href="#"
+                <a href="/register.html"
                     class="hidden md:inline-flex bg-dark text-white px-8 py-2.5 rounded-full font-bold hover:bg-gray-800 transition-colors duration-300">
                     SIGN UP
                 </a>
@@ -42,14 +42,22 @@
     </div>
 
     <!-- Mobile Menu -->
-    <div x-show="mobileMenuOpen" x-transition
-        class="md:hidden bg-white/80 backdrop-blur-xl border-b border-white/30 absolute w-full left-0 top-20 shadow-[0_4px_30px_rgba(0,0,0,0.05)]"
+    <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-300 transform origin-top"
+        x-transition:enter-start="opacity-0 scale-95 -translate-y-4"
+        x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-200 transform origin-top"
+        x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+        x-transition:leave-end="opacity-0 scale-95 -translate-y-4"
+        class="md:hidden bg-white/30 backdrop-blur-lg border border-white/40 absolute w-[95%] left-1/2 -translate-x-1/2 top-20 rounded-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.07)]"
         style="display:none;">
-        <div class="px-6 py-6 flex flex-col gap-5 text-center">
-            <a href="#" @click="closeMenu" class="text-lg font-bold text-dark hover:text-primary">HOME</a>
-            <a href="#cars-part" @click="closeMenu" class="text-lg font-bold text-dark hover:text-primary">CARS
+        <div class="px-6 py-6 flex flex-col gap-4 text-center">
+            <a href="#" @click="closeMenu"
+                class="text-lg font-bold text-dark hover:text-primary transition-colors">HOME</a>
+            <a href="#cars-part" @click="closeMenu"
+                class="text-lg font-bold text-dark hover:text-primary transition-colors">CARS
                 PART</a>
-            <a href="#" class="mt-2 bg-dark text-white px-6 py-3 rounded-full font-bold hover:bg-gray-800">SIGN
+            <a href="/register.html"
+                class="mt-2 bg-dark text-white px-6 py-3 rounded-full font-bold hover:bg-gray-800 transition-colors">SIGN
                 UP</a>
         </div>
     </div>

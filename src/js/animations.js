@@ -8,6 +8,15 @@ export function initAnimations() {
     const titleLines = document.querySelectorAll('.hero-title-line');
     const heroTexts = document.querySelectorAll('.hero-text-animate');
 
+    // Logo Tire Slide Left-Right Animation on Load
+    const logoTire = document.querySelector('.brand-logo-anim');
+    if (logoTire) {
+        const tl = gsap.timeline({ delay: 0.1 });
+        tl.fromTo(logoTire, { x: -30, opacity: 0 }, { x: 15, opacity: 1, duration: 0.6, ease: "power2.out" })
+            .to(logoTire, { x: -10, duration: 0.3, ease: "power1.inOut" })
+            .to(logoTire, { x: 0, duration: 0.4, ease: "power2.out" });
+    }
+
     if (titleLines.length) {
         gsap.fromTo(titleLines, {
             yPercent: 100
@@ -76,27 +85,32 @@ export function initAnimations() {
         });
 
         // Scroll animation for Cars Part Detail Section
-        const sectionTitle = carsPartSection.querySelector('h2');
-        const hotspots = carsPartSection.querySelectorAll('.group');
+        const sectionTitle = carsPartSection.querySelector('.cars-part-title-anim');
+        const svgLines = carsPartSection.querySelectorAll('.draw-line-anim');
+        const textBlocks = carsPartSection.querySelectorAll('.hotspot-text-anim');
 
-        gsap.fromTo(sectionTitle, {
-            opacity: 0,
-            x: 50
-        }, {
-            opacity: 0.9,
-            x: 0,
-            duration: 1.2,
-            ease: 'power3.out',
-            scrollTrigger: {
-                trigger: carsPartSection,
-                start: "top 75%",
-                toggleActions: "play none none reverse"
-            }
-        });
+        // Animate Title
+        if (sectionTitle) {
+            gsap.fromTo(sectionTitle, {
+                opacity: 0,
+                y: -30
+            }, {
+                opacity: 1,
+                y: 0,
+                duration: 1.2,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: carsPartSection,
+                    start: "top 75%",
+                    toggleActions: "play none none reverse"
+                }
+            });
+        }
 
+        // Animate Car
         gsap.fromTo(carTarget, {
             opacity: 0,
-            y: 100,
+            y: 80,
             scale: 0.95
         }, {
             opacity: 1,
@@ -111,16 +125,34 @@ export function initAnimations() {
             }
         });
 
-        // We handle hotspots via CSS animation currently, but we can trigger their container fade-in
-        gsap.utils.toArray(hotspots).forEach((hotspot, i) => {
-            gsap.fromTo(hotspot, {
+        // Initialize SVG lines (draw effect)
+        gsap.utils.toArray(svgLines).forEach((line, i) => {
+            const length = line.getTotalLength();
+            gsap.set(line, { strokeDasharray: length, strokeDashoffset: length });
+
+            gsap.to(line, {
+                strokeDashoffset: 0,
+                duration: 1,
+                delay: 0.5 + (i * 0.1),
+                ease: 'power2.inOut',
+                scrollTrigger: {
+                    trigger: carsPartSection,
+                    start: "top 50%",
+                    toggleActions: "play none none reverse"
+                }
+            });
+        });
+
+        // Animate Text Blocks
+        gsap.utils.toArray(textBlocks).forEach((block, i) => {
+            gsap.fromTo(block, {
                 opacity: 0,
-                y: 20
+                y: 15
             }, {
                 opacity: 1,
                 y: 0,
                 duration: 0.8,
-                delay: i * 0.2 + 0.5,
+                delay: 1.2 + (i * 0.1), // Starts after lines are mostly drawn
                 ease: 'power2.out',
                 scrollTrigger: {
                     trigger: carsPartSection,
@@ -128,8 +160,6 @@ export function initAnimations() {
                     toggleActions: "play none none reverse"
                 }
             });
-            // We remove the default CSS animation to prevent conflict
-            hotspot.style.animation = 'none';
         });
     }
 }
