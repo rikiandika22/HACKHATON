@@ -33,12 +33,16 @@
                 </div>
             </div>
 
-            <!-- Right Column: Mockup Image -->
             <div
                 class="feature-image-anim relative w-full flex justify-center lg:justify-end mt-10 lg:mt-0 opacity-0 scale-95">
-                <!-- Using a placeholder name, waiting for the user to upload the image or place it in this path -->
-                <img src="/assets/images/mockup-devices.png" alt="Autospec Devices Mockup"
-                    class="w-full h-auto max-w-[600px] object-contain drop-shadow-2xl hover:scale-[1.02] transition-transform duration-700" />
+                <div class="relative w-full max-w-[600px] hover:scale-[1.02] transition-transform duration-700">
+                    <!-- Desktop Mockup -->
+                    <img src="/assets/images/mockup-desktop.png" alt="Autospec Desktop Mockup"
+                        class="w-full h-auto object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.25)]" />
+                    <!-- Mobile Mockup (Overlay) -->
+                    <img src="/assets/images/mockup-mobile.png" alt="Autospec Mobile Mockup"
+                        class="absolute bottom-[-5%] right-[-5%] w-[35%] h-auto object-contain drop-shadow-[0_25px_35px_rgba(0,0,0,0.4)]" />
+                </div>
             </div>
 
         </div>
