@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AUTOSPEC - Chat AI</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- Favicon & Fonts -->
     <link rel="icon" type="image/png" href="/assets/images/lucide-lab_tire.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,6 +27,15 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
+        /* TAMBAHAN: CSS untuk mempercantik Tabel & List dari AI */
+        .markdown-body p { margin-bottom: 0.75rem; }
+        .markdown-body strong { font-weight: 700; color: #111827; }
+        .markdown-body ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 0.75rem; }
+        .markdown-body ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 0.75rem; }
+        .markdown-body table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; margin-bottom: 1rem; font-size: 14px; }
+        .markdown-body th, .markdown-body td { border: 1px solid #D1D5DB; padding: 0.5rem; text-align: left; }
+        .markdown-body th { background-color: #F3F4F6; font-weight: 600; }
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 { font-weight: bold; margin-top: 1rem; margin-bottom: 0.5rem; }
     </style>
 </head>
 
@@ -401,7 +411,7 @@
         </div>
 
         <!-- Filled State Container -->
-        <div x-show="isChatFilled" class="flex-1 flex flex-col w-full max-w-[850px] mx-auto relative pt-4" x-cloak>
+        <div x-show="isChatFilled" class="flex-1 flex flex-col w-full max-w-[850px] mx-auto relative pt-4 min-h-0 overflow-hidden" x-cloak>
 
             <!-- Chat History Area -->
             <div class="flex-1 overflow-y-auto w-full px-4 pb-40 flex flex-col gap-6" id="chat-container">
@@ -417,8 +427,8 @@
 
                         <!-- AI Bubble -->
                         <div x-show="msg.role === 'ai'"
-                            class="bg-[#E5E7EB] text-gray-900 px-6 py-4 rounded-2xl rounded-tl-none max-w-[80%] shadow-sm">
-                            <p class="text-[15px] font-medium leading-[1.6]" x-text="msg.content"></p>
+                            class="bg-[#E5E7EB] text-gray-900 px-6 py-4 rounded-2xl rounded-tl-none max-w-[80%] shadow-sm overflow-x-auto">
+                            <div class="markdown-body" x-html="marked.parse(msg.content)"></div>
                         </div>
                     </div>
                 </template>
@@ -560,25 +570,46 @@
                     this.scrollToBottom();
 
                     // Mock AI response
-                    setTimeout(() => {
-                        let aiResponse = "Saya adalah AI dari AUTOSPEC. Pembaruan Anda berhasil masuk, referensi desain UI (empty dan filled state) telah diterapkan sempurna.";
+                    // setTimeout(() => {
+                    //     let aiResponse = "Saya adalah AI dari AUTOSPEC. Pembaruan Anda berhasil masuk, referensi desain UI (empty dan filled state) telah diterapkan sempurna.";
 
-                        if (query.toLowerCase().includes('supra') || query.toLowerCase().includes('ekstraksi')) {
-                            // Mimicking exact text from the screenshot
-                            aiResponse = "Berdasarkan data pabrikan, Toyota Supra dibekali mesin legendaris 6-silinder segaris (In-line 6). Sistem kami mendeteksi anomali pada pertanyaan Anda dan telah menormalisasi kapasitas mesin menjadi 3000 cc (3.0L). Tenaga standar pabriknya adalah 320 Horsepower (HP) berkat dukungan Twin-Turbo. Untuk efisiensi penggunaan harian (City MPG), konsumsinya berada di kisaran 17 MPG.";
-                        } else if (query.toLowerCase().includes('civic') || query.toLowerCase().includes('dimensi')) {
-                            aiResponse = "Honda Civic RS 2023 memiliki panjang keseluruhan 4.678 mm, lebar 1.802 mm, dan tinggi 1.415 mm. Jarak sumbu rodanya (wheelbase) adalah 2.735 mm yang menjanjikan legroom luas.";
-                        } else if (query.toLowerCase().includes('bbm') || query.toLowerCase().includes('mazda')) {
-                            aiResponse = "Mazda CX-5 (2023) 2.5L FWD memiliki efisiensi bahan bakar rata-rata sekitar 24 MPG (sekitar 10,2 km/L) untuk rute dalam kota, dan 30 MPG (sekitar 12,7 km/L) untuk rute jalan tol.";
-                        } else if (query.toLowerCase().includes('velg') || query.toLowerCase().includes('brio') || query.toLowerCase().includes('kompatibilitas')) {
-                            aiResponse = "Secara teknis, velg Ring 18 (R18) bisa dipasang di Honda Brio, namun ini tergolong 'over-spec' untuk harian. Anda harus menggunakan profil ban sangat tipis (misal 205/35 R18) agar tidak menggesek spakbor. Namun perlu diingat hal ini akan drastis mengurangi kenyamanan bantingan suspensi dan memberatkan putaran mesin awal.";
-                        }
+                    //     if (query.toLowerCase().includes('supra') || query.toLowerCase().includes('ekstraksi')) {
+                    //         // Mimicking exact text from the screenshot
+                    //         aiResponse = "Berdasarkan data pabrikan, Toyota Supra dibekali mesin legendaris 6-silinder segaris (In-line 6). Sistem kami mendeteksi anomali pada pertanyaan Anda dan telah menormalisasi kapasitas mesin menjadi 3000 cc (3.0L). Tenaga standar pabriknya adalah 320 Horsepower (HP) berkat dukungan Twin-Turbo. Untuk efisiensi penggunaan harian (City MPG), konsumsinya berada di kisaran 17 MPG.";
+                    //     } else if (query.toLowerCase().includes('civic') || query.toLowerCase().includes('dimensi')) {
+                    //         aiResponse = "Honda Civic RS 2023 memiliki panjang keseluruhan 4.678 mm, lebar 1.802 mm, dan tinggi 1.415 mm. Jarak sumbu rodanya (wheelbase) adalah 2.735 mm yang menjanjikan legroom luas.";
+                    //     } else if (query.toLowerCase().includes('bbm') || query.toLowerCase().includes('mazda')) {
+                    //         aiResponse = "Mazda CX-5 (2023) 2.5L FWD memiliki efisiensi bahan bakar rata-rata sekitar 24 MPG (sekitar 10,2 km/L) untuk rute dalam kota, dan 30 MPG (sekitar 12,7 km/L) untuk rute jalan tol.";
+                    //     } else if (query.toLowerCase().includes('velg') || query.toLowerCase().includes('brio') || query.toLowerCase().includes('kompatibilitas')) {
+                    //         aiResponse = "Secara teknis, velg Ring 18 (R18) bisa dipasang di Honda Brio, namun ini tergolong 'over-spec' untuk harian. Anda harus menggunakan profil ban sangat tipis (misal 205/35 R18) agar tidak menggesek spakbor. Namun perlu diingat hal ini akan drastis mengurangi kenyamanan bantingan suspensi dan memberatkan putaran mesin awal.";
+                    //     }
 
-                        this.messages.push({ id: Date.now(), role: 'ai', content: aiResponse });
+                    //     this.messages.push({ id: Date.now(), role: 'ai', content: aiResponse });
+                    //     this.isTyping = false;
+
+                    //     this.scrollToBottom();
+                    // }, 1200);
+
+                    // Call FastAPI backend
+                    fetch('http://127.0.0.1:8001/api/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ message: query })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.messages.push({ id: Date.now(), role: 'ai', content: data.reply });
                         this.isTyping = false;
-
                         this.scrollToBottom();
-                    }, 1200);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        this.messages.push({ id: Date.now(), role: 'ai', content: 'Maaf, koneksi ke server Autospec terputus.' });
+                        this.isTyping = false;
+                        this.scrollToBottom();
+                    });
                 },
 
                 scrollToBottom() {
