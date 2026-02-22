@@ -16,11 +16,21 @@ export default {
             },
             animation: {
                 'marquee': 'marquee 25s linear infinite',
+                'floating-1': 'floating 4s ease-in-out infinite',
+                'floating-2': 'floatingReverse 5s ease-in-out infinite',
             },
             keyframes: {
                 marquee: {
                     '0%': { transform: 'translateX(0)' },
                     '100%': { transform: 'translateX(-50%)' },
+                },
+                floating: {
+                    '0%, 100%': { transform: 'translateY(0)' },
+                    '50%': { transform: 'translateY(-15px)' },
+                },
+                floatingReverse: {
+                    '0%, 100%': { transform: 'translateY(0)' },
+                    '50%': { transform: 'translateY(15px)' },
                 }
             },
             backgroundImage: {
