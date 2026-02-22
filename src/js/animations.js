@@ -43,7 +43,24 @@ export function initAnimations() {
         });
     }
 
-    // 2. Infinite Marquee
+    // 2. Feature Intro Section (Asisten Otomotif Cerdas) Scroll Animation
+    const featureIntroSection = document.getElementById('feature-intro');
+    if (featureIntroSection) {
+        const tlFeature = gsap.timeline({
+            scrollTrigger: {
+                trigger: featureIntroSection,
+                start: 'top 75%',
+                toggleActions: 'play none none reverse'
+            }
+        });
+
+        tlFeature.to('.feature-title-anim', { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' })
+            .to('.feature-bubble-1-anim', { x: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }, '-=0.4')
+            .to('.feature-bubble-2-anim', { x: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }, '-=0.6')
+            .to('.feature-image-anim', { scale: 1, opacity: 1, duration: 1, ease: 'back.out(1.5)' }, '-=0.6');
+    }
+
+    // 3. Infinite Marquee
     const marqueeContainer = document.querySelector('.animate-marquee');
     if (marqueeContainer) {
         marqueeContainer.style.animation = 'none';

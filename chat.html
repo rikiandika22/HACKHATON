@@ -218,7 +218,7 @@
                                 d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
                             </path>
                         </svg>
-                        <span class="text-[13px] font-semibold">Gemini Flash</span>
+                        <span class="text-[13px] font-semibold">Deep Seek R1</span>
                     </div>
                     <!-- Send Button, properly centered horizontally and vertically -->
                     <button @click="sendMessage()"
@@ -462,7 +462,7 @@
                                     d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
                                 </path>
                             </svg>
-                            <span class="text-[13px] font-semibold">Gemini Flash</span>
+                            <span class="text-[13px] font-semibold">Deep Seek R1</span>
                         </div>
                         <button @click="sendMessage()"
                             class="bg-[#FF5A36] text-white w-10 h-10 flex items-center justify-center rounded-full hover:bg-orange-600 transition-colors shadow-sm">
@@ -553,8 +553,7 @@
 
                     if (!this.isChatFilled) {
                         this.isChatFilled = true;
-                        this.showCards = false; // Hide cards when filled
-                        // Optional: close sidebar on mobile when chatting starts
+                        this.showCards = false;
                         if (window.innerWidth < 768) {
                             this.isSidebarOpen = false;
                         }

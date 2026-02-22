@@ -14,14 +14,19 @@
             <!-- Desktop Nav -->
             <nav class="hidden md:flex gap-8 font-semibold">
                 <a href="#" class="nav-link text-dark hover:text-primary transition-colors">HOME</a>
+                <a href="/chat.html" class="nav-link text-dark hover:text-primary transition-colors">AI ASSISTANT</a>
                 <a href="#cars-part" class="nav-link text-dark hover:text-primary transition-colors">CARS
                     PART</a>
             </nav>
 
             <!-- Desk Right -->
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3">
+                <a href="/login.html"
+                    class="hidden md:inline-flex border border-dark text-dark px-6 py-2 rounded-full font-bold hover:bg-dark hover:text-white transition-colors duration-300">
+                    LOGIN
+                </a>
                 <a href="/register.html"
-                    class="hidden md:inline-flex bg-dark text-white px-8 py-2.5 rounded-full font-bold hover:bg-gray-800 transition-colors duration-300">
+                    class="hidden md:inline-flex bg-dark text-white px-6 py-2 rounded-full font-bold hover:bg-gray-800 transition-colors duration-300">
                     SIGN UP
                 </a>
 
@@ -53,12 +58,19 @@
         <div class="px-6 py-6 flex flex-col gap-4 text-center">
             <a href="#" @click="closeMenu"
                 class="text-lg font-bold text-dark hover:text-primary transition-colors">HOME</a>
+            <a href="/chat.html" @click="closeMenu"
+                class="text-lg font-bold text-dark hover:text-primary transition-colors">AI ASSISTANT</a>
             <a href="#cars-part" @click="closeMenu"
                 class="text-lg font-bold text-dark hover:text-primary transition-colors">CARS
                 PART</a>
-            <a href="/register.html"
-                class="mt-2 bg-dark text-white px-6 py-3 rounded-full font-bold hover:bg-gray-800 transition-colors">SIGN
-                UP</a>
+
+            <div class="flex flex-col gap-3 mt-4">
+                <a href="/login.html"
+                    class="border border-dark text-dark px-6 py-3 rounded-full font-bold hover:bg-dark hover:text-white transition-colors">LOGIN</a>
+                <a href="/register.html"
+                    class="bg-dark text-white px-6 py-3 rounded-full font-bold hover:bg-gray-800 transition-colors">SIGN
+                    UP</a>
+            </div>
         </div>
     </div>
 </header>
