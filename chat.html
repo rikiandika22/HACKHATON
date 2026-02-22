@@ -418,7 +418,8 @@
                         <!-- AI Bubble -->
                         <div x-show="msg.role === 'ai'"
                             class="bg-[#E5E7EB] text-gray-900 px-6 py-4 rounded-2xl rounded-tl-none max-w-[80%] shadow-sm">
-                            <p class="text-[15px] font-medium leading-[1.6]" x-text="msg.content"></p>
+                            <p class="text-[15px] font-medium leading-[1.6] whitespace-pre-wrap" x-text="msg.content">
+                            </p>
                         </div>
                     </div>
                 </template>
@@ -543,8 +544,7 @@
 
                     if (!this.isChatFilled) {
                         this.isChatFilled = true;
-                        this.showCards = false; // Hide cards when filled
-                        // Optional: close sidebar on mobile when chatting starts
+                        this.showCards = false;
                         if (window.innerWidth < 768) {
                             this.isSidebarOpen = false;
                         }
