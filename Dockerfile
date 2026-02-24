@@ -1,27 +1,26 @@
-# Gunakan base image Python
-FROM python:3.10-slim
+# Gunakan base image Python yang stabil
+FROM python:3.12-slim
 
-# Set folder kerja di dalam container
+# Set folder kerja
 WORKDIR /app
 
-# Install library pendukung untuk OpenCV/Sistem (jika ada pemrosesan citra)
+# Install library pendukung sistem (untuk pemrosesan dasar)
 RUN apt-get update && apt-get install -y \
     libgl1 \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy file requirements (daftar library) ke container
-# Jika belum ada file requirements.txt, buat dulu (pip freeze > requirements.txt)
+# Copy daftar library
 COPY requirements.txt .
 
-# Install semua library (FastAPI, Uvicorn, LangChain, dll)
+# Install library (tanpa library berat yang sudah dihapus)
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy semua file proyek (app.py, file .csv, folder src, dll) ke container
+# Copy semua file proyek
 COPY . .
 
-# Ekspos port sesuai yang ada di gambar kamu (port 8001)
+# Ekspos port 8001
 EXPOSE 8001
 
-# Jalankan aplikasi menggunakan uvicorn
+# Jalankan aplikasi
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8001"]

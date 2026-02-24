@@ -5,22 +5,305 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AUTOSPEC - Jangan Tebak Spesifikasi Mobilmu</title>
-    <!-- Favicon -->
+    
     <link rel="icon" type="image/png" href="/assets/images/lucide-lab_tire.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#FF5A36',
+                        dark: '#1A1A1A',
+                        light: '#F8F9FA'
+                    },
+                    animation: {
+                        'marquee': 'marquee 25s linear infinite',
+                    },
+                    keyframes: {
+                        marquee: {
+                            '0%': { transform: 'translateX(0%)' },
+                            '100%': { transform: 'translateX(-50%)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+        .text-balance { text-wrap: balance; }
+        .parallax-wrapper { perspective: 1000px; }
+        
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: '';
+            position: absolute; width: 0; height: 2px; bottom: -4px; left: 0;
+            background-color: #FF5A36; transition: width 0.3s ease-in-out;
+        }
+        .nav-link:hover::after { width: 100%; }
+        
+        .hotspot-dot {
+            box-shadow: 0 0 0 0 rgba(255, 90, 54, 0.7);
+            animation: hotspot-pulse-ring 2s infinite;
+        }
+        @keyframes hotspot-pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 90, 54, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 90, 54, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 90, 54, 0); }
+        }
+
+        /* Prevent flickers before Alpine loads */
+        [x-cloak] { display: none !important; }
+    </style>
 </head>
 
 <body>
-    <div x-data="navbar" class="w-full">
-        <include src="./src/components/header.html"></include>
-        <include src="./src/components/hero.html"></include>
-        <include src="./src/components/marquee.html"></include>
-        <include src="./src/components/feature-intro.html"></include>
-        <include src="./src/components/cars-part.html"></include>
-        <include src="./src/components/cta.html"></include>
-        <include src="./src/components/footer.html"></include>
-    </div>
+    <div x-data="{ mobileMenuOpen: false, toggleMenu() { this.mobileMenuOpen = !this.mobileMenuOpen }, closeMenu() { this.mobileMenuOpen = false } }" class="w-full">
+        
+        <header class="fixed z-50 top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-4xl bg-white/20 backdrop-blur-md rounded-full border border-white/40 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] transition-all duration-300">
+            <div class="px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <a href="#" class="flex items-center gap-3">
+                        <img src="/assets/images/lucide-lab_tire.png" alt="Autospec Tire Icon" class="brand-logo-anim w-8 h-8 object-contain filter invert-50 sepia-100 saturate-[4000%] hue-rotate-350 brightness-110 contrast-110" style="filter: brightness(0) saturate(100%) invert(48%) sepia(87%) saturate(1478%) hue-rotate(345deg) brightness(101%) contrast(101%);" />
+                        <span class="text-xl md:text-2xl font-semibold tracking-tight text-dark">AUTOSPEC</span>
+                    </a>
+                    <nav class="hidden md:flex gap-8 font-semibold">
+                        <a href="#" class="nav-link text-dark hover:text-primary transition-colors">HOME</a>
+                        <a href="/chat.html" class="nav-link text-dark hover:text-primary transition-colors">AI ASSISTANT</a>
+                        <a href="#cars-part" class="nav-link text-dark hover:text-primary transition-colors">CARS PART</a>
+                    </nav>
+                    <div class="flex items-center gap-3">
+                        <a href="/login.html" class="hidden md:inline-flex border border-dark text-dark px-6 py-2 rounded-full font-bold hover:bg-dark hover:text-white transition-colors duration-300">LOGIN</a>
+                        <a href="/register.html" class="hidden md:inline-flex bg-dark text-white px-6 py-2 rounded-full font-bold hover:bg-gray-800 transition-colors duration-300">SIGN UP</a>
+                        <button @click="toggleMenu" class="md:hidden text-dark p-2 focus:outline-none">
+                            <svg x-show="!mobileMenuOpen" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                            <svg x-show="mobileMenuOpen" style="display:none;" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-300 transform origin-top" x-transition:enter-start="opacity-0 scale-95 -translate-y-4" x-transition:enter-end="opacity-100 scale-100 translate-y-0" x-transition:leave="transition ease-in duration-200 transform origin-top" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 -translate-y-4" class="md:hidden bg-white/30 backdrop-blur-lg border border-white/40 absolute w-[95%] left-1/2 -translate-x-1/2 top-20 rounded-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.07)]" style="display:none;">
+                <div class="px-6 py-6 flex flex-col gap-4 text-center">
+                    <a href="#" @click="closeMenu" class="text-lg font-bold text-dark hover:text-primary transition-colors">HOME</a>
+                    <a href="/chat.html" @click="closeMenu" class="text-lg font-bold text-dark hover:text-primary transition-colors">AI ASSISTANT</a>
+                    <a href="#cars-part" @click="closeMenu" class="text-lg font-bold text-dark hover:text-primary transition-colors">CARS PART</a>
+                    <div class="flex flex-col gap-3 mt-4">
+                        <a href="/login.html" class="border border-dark text-dark px-6 py-3 rounded-full font-bold hover:bg-dark hover:text-white transition-colors">LOGIN</a>
+                        <a href="/register.html" class="bg-dark text-white px-6 py-3 rounded-full font-bold hover:bg-gray-800 transition-colors">SIGN UP</a>
+                    </div>
+                </div>
+            </div>
+        </header>
 
-    <script type="module" src="/src/js/main.js"></script>
-</body>
+        <section class="pt-32 pb-10 md:pt-40 md:pb-24 bg-[#E8E8E8] relative overflow-hidden flex flex-col justify-center min-h-screen">
+            <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+                <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#000 1.5px, transparent 1.5px); background-size: 32px 32px;"></div>
+                <div class="absolute top-1/2 right-[-10%] sm:right-[-5%] md:right-[0%] -translate-y-1/2 w-[120vw] sm:w-[80vw] md:w-[60vw] lg:w-[50vw] h-[120vw] sm:h-[80vw] md:h-[60vw] lg:h-[50vw] lg:max-w-[1000px] lg:max-h-[1000px] pointer-events-none" style="background: radial-gradient(circle, rgba(255,90,54,0.5) 0%, rgba(255,90,54,0.2) 40%, transparent 75%);"></div>
+            </div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full flex-grow flex flex-col justify-center mt-6 md:mt-0">
+                <div class="w-full md:w-[60%] lg:w-[55%] z-20 pb-44 sm:pb-52 md:pb-24 pt-6 md:pt-0">
+                    <h1 class="text-[2.2rem] xs:text-[2.4rem] sm:text-[3.2rem] md:text-[4.2rem] lg:text-[4.5rem] font-medium leading-[1.05] mb-6 md:mb-8 text-[#222222] tracking-tight">
+                        <span class="block overflow-hidden pb-1"><span class="block hero-title-line">JANGAN TEBAK</span></span>
+                        <span class="block overflow-hidden pb-1"><span class="block hero-title-line">SPESIFIKASI</span></span>
+                        <span class="block overflow-hidden pb-1"><span class="block hero-title-line">MOBILMU, TANYA <span class="text-primary font-bold">AUTOSPEC!</span></span></span>
+                    </h1>
+                    <p class="text-sm xs:text-base sm:text-lg md:text-xl text-[#333333] mb-8 md:mb-10 font-medium leading-relaxed max-w-md hero-text-animate">
+                        Dari horsepower hingga konversi<br class="hidden sm:block" />
+                        satuan mesin, dapatkan data akurat<br class="hidden sm:block" />
+                        dan tervalidasi hanya lewat satu baris<br class="hidden sm:block" />
+                        chat.
+                    </p>
+                    <div class="hero-text-animate">
+                        <a href="/chat.html" class="group inline-flex items-center gap-2 text-primary font-bold text-base md:text-xl hover:text-orange-600 transition-colors border-b-2 border-primary pb-1 w-max">
+                            Coba AUTOSPEC
+                            <svg class="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300 transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"></path></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute bottom-[-2%] md:top-1/2 md:-translate-y-1/2 md:bottom-auto right-[-25%] xs:right-[-20%] sm:right-[-10%] md:right-[-12%] w-[130%] xs:w-[120%] sm:w-[90%] md:w-[70%] lg:w-[65%] z-10 pointer-events-none flex justify-end items-end md:items-center">
+                <img src="/assets/images/3d-car-with-simple-background 2.png" alt="Black Sports Car" class="w-full h-auto object-contain object-right drop-shadow-[0_20px_20px_rgba(0,0,0,0.4)] md:drop-shadow-[0_45px_45px_rgba(0,0,0,0.65)]" />
+            </div>
+        </section>
+
+        <section class="bg-[#1A1A1A] py-4 overflow-hidden relative border-y border-gray-800 z-30">
+            <div class="flex w-max animate-marquee">
+                <div class="flex items-center whitespace-nowrap">
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">HONDA</span><span class="text-gray-500 text-sm">•</span>
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">TOYOTA</span><span class="text-gray-500 text-sm">•</span>
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">NISSAN</span><span class="text-gray-500 text-sm">•</span>
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">MAZDA</span><span class="text-gray-500 text-sm">•</span>
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">BMW</span><span class="text-gray-500 text-sm">•</span>
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">AUDI</span><span class="text-gray-500 text-sm">•</span>
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">MERCEDES-BENZ</span><span class="text-gray-500 text-sm">•</span>
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">PORSCHE</span><span class="text-gray-500 text-sm">•</span>
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">SUBARU</span><span class="text-gray-500 text-sm">•</span>
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">MITSUBISHI</span><span class="text-gray-500 text-sm">•</span>
+                </div>
+                <div class="flex items-center whitespace-nowrap">
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">HONDA</span><span class="text-gray-500 text-sm">•</span>
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">TOYOTA</span><span class="text-gray-500 text-sm">•</span>
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">NISSAN</span><span class="text-gray-500 text-sm">•</span>
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">MAZDA</span><span class="text-gray-500 text-sm">•</span>
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">BMW</span><span class="text-gray-500 text-sm">•</span>
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">AUDI</span><span class="text-gray-500 text-sm">•</span>
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">MERCEDES-BENZ</span><span class="text-gray-500 text-sm">•</span>
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">PORSCHE</span><span class="text-gray-500 text-sm">•</span>
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">SUBARU</span><span class="text-gray-500 text-sm">•</span>
+                    <span class="text-white text-xl md:text-2xl font-bold tracking-widest px-6 md:px-8">MITSUBISHI</span><span class="text-gray-500 text-sm">•</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="feature-intro" class="py-20 md:py-32 bg-[#FF5A36] relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <h2 class="text-white text-3xl md:text-5xl lg:text-[56px] font-bold text-center mb-16 md:mb-24 tracking-tight">Asisten Otomotif Cerdas</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+                    <div class="flex flex-col gap-6 md:gap-8 max-w-xl mx-auto lg:mx-0 w-full">
+                        <div class="bg-[#FFE4DD] text-gray-800 p-6 md:p-8 rounded-3xl rounded-br-sm shadow-lg w-[95%] md:w-[85%] self-end">
+                            <p class="font-medium text-base md:text-lg leading-relaxed text-[#222]">
+                                Didukung oleh kecepatan <span class="font-bold">Deep Seek R1</span>, antarmuka kami siap menerjemahkan bahasa awam sehari-harimu menjadi ekstraksi data spesifikasi OpenSpec_V1 yang presisi secara real-time.
+                            </p>
+                        </div>
+                        <div class="bg-gray-200 text-gray-800 p-6 md:p-8 rounded-3xl rounded-bl-sm shadow-lg w-[95%] md:w-[85%] self-start">
+                            <p class="font-medium text-base md:text-lg leading-relaxed text-[#222]">
+                                Akses asisten otomotif pribadimu kapan saja, di mana saja. Antarmuka AutoSpec dirancang mulus dan responsif, memberikan pengalaman chat yang intuitif baik di desktop maupun genggaman mobile.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="relative w-full flex justify-center lg:justify-end mt-10 lg:mt-0">
+                        <div class="relative w-full max-w-[600px] hover:scale-[1.02] transition-transform duration-700">
+                            <img src="/assets/images/mockup-desktop.png" alt="Autospec Desktop Mockup" class="w-full h-auto object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.25)] relative z-10" />
+                            <img src="/assets/images/mockup-mobile.png" alt="Autospec Mobile Mockup" class="absolute bottom-[-10%] left-[-15%] md:left-[-12%] w-[40%] md:w-[45%] h-auto object-contain drop-shadow-[0_25px_35px_rgba(0,0,0,0.5)] -rotate-[15deg] z-20 hover:rotate-[-10deg] transition-transform duration-500" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cars-part" class="relative py-24 md:py-32 parallax-wrapper bg-[#F4F4F5]">
+            <div class="absolute inset-0 z-0 bg-[#F4F4F5] overflow-hidden mix-blend-multiply opacity-[0.85]">
+                <div class="absolute inset-0" style="background-image: linear-gradient(#d1d5db 1px, transparent 1px), linear-gradient(90deg, #d1d5db 1px, transparent 1px); background-size: 60px 60px; opacity: 0.5;"></div>
+                <div class="absolute top-[-5%] right-[-5%] w-[600px] h-[600px] bg-gradient-radial from-[#FF9D82]/30 to-transparent blur-3xl rounded-full mix-blend-multiply pointer-events-none"></div>
+            </div>
+            <div class="relative z-10 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+                <div class="w-full text-center z-20 pointer-events-none mb-10">
+                    <h2 class="text-[3.5rem] sm:text-[4.5rem] md:text-[6rem] lg:text-[7.5rem] leading-[0.9] text-primary tracking-tighter drop-shadow-sm font-light">
+                        CARS PART <span class="font-bold">DETAIL</span>
+                    </h2>
+                </div>
+                <div class="relative w-full h-auto lg:aspect-[21/9] flex flex-col lg:flex-row items-center justify-center mt-4 lg:mt-10">
+                    <img src="/assets/images/cars-part-new-bmw-v5.png" alt="BMW Cars Part Detail" class="w-[95%] md:w-[75%] lg:w-[75%] h-auto drop-shadow-xl relative z-10 pointer-events-none scale-105 transform origin-center">
+                    <svg class="hidden lg:block absolute inset-0 w-full h-full pointer-events-none z-0" xmlns="http://www.w3.org/2000/svg">
+                        <defs><marker id="orangeDotStart" markerWidth="8" markerHeight="8" refX="4" refY="4"><circle cx="4" cy="4" r="4" fill="#FF5A36" /></marker></defs>
+                        <path d="M 8% 48% L 15% 48% L 29% 55%" fill="none" stroke="#6b7280" stroke-width="1.5" marker-start="url(#orangeDotStart)" />
+                        <path d="M 12% 90% L 20% 90% L 48% 68%" fill="none" stroke="#6b7280" stroke-width="1.5" marker-start="url(#orangeDotStart)" />
+                        <path d="M 28% 10% L 28% 38% L 36.5% 38%" fill="none" stroke="#6b7280" stroke-width="1.5" marker-start="url(#orangeDotStart)" />
+                        <path d="M 76% 15% L 57% 53%" fill="none" stroke="#6b7280" stroke-width="1.5" marker-start="url(#orangeDotStart)" />
+                        <path d="M 85% 45% L 62% 47%" fill="none" stroke="#6b7280" stroke-width="1.5" marker-start="url(#orangeDotStart)" />
+                        <path d="M 75% 88% L 50% 88% L 47% 76%" fill="none" stroke="#6b7280" stroke-width="1.5" marker-start="url(#orangeDotStart)" />
+                    </svg>
+                    <div class="static lg:absolute inset-0 z-20 w-full h-auto lg:h-full pointer-events-none mt-8 lg:mt-0 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 px-4 sm:px-8 lg:px-0 lg:block">
+                        <div class="relative lg:absolute w-full lg:w-[15%] text-left hotspot-text-anim pointer-events-auto" style="top: 36%; left: -6%;">
+                            <div class="bg-gray-200/40 backdrop-blur-md rounded-2xl p-4 border border-white/60 shadow-sm h-full">
+                                <h4 class="text-primary font-bold text-[15px] mb-2">Velg (Rims)</h4>
+                                <p class="text-gray-800 text-[13px] font-medium leading-relaxed">Desain aero-spoke ultra-ringan (hanya 8.5 kg per velg). Berfungsi menekan unsprung mass untuk meningkatkan respons handling dan aerodinamika kendaraan.</p>
+                            </div>
+                        </div>
+                        <div class="relative lg:absolute w-full lg:w-[35%] text-left hotspot-text-anim pointer-events-auto" style="top: 88%; left: 8%;">
+                            <div class="bg-gray-200/40 backdrop-blur-md rounded-2xl p-4 border border-white/60 shadow-sm h-full">
+                                <h4 class="text-primary font-bold text-[15px] mb-2">Braking System</h4>
+                                <p class="text-gray-800 text-[13px] font-medium leading-relaxed">Rotor berdiameter 380mm dengan kaliper 6-piston. Material tahan panas ekstrem untuk meminimalkan brake fade.</p>
+                            </div>
+                        </div>
+                        <div class="relative lg:absolute w-full lg:w-[32%] text-left hotspot-text-anim pointer-events-auto" style="top: 2%; left: 23%;">
+                            <div class="bg-gray-200/40 backdrop-blur-md rounded-2xl p-4 border border-white/60 shadow-sm h-full">
+                                <h4 class="text-primary font-bold text-[15px] mb-1">Side Mirror</h4>
+                                <p class="text-gray-800 text-[13px] font-medium leading-relaxed">Desain membelah angin untuk mengurangi drag dan kebisingan (wind noise). Terintegrasi dengan sensor Blind Spot Monitoring.</p>
+                            </div>
+                        </div>
+                        <div class="relative lg:absolute w-full lg:w-[26%] text-left hotspot-text-anim pointer-events-auto" style="top: 10%; left: 75%;">
+                            <div class="bg-gray-200/40 backdrop-blur-md rounded-2xl p-4 border border-white/60 shadow-sm h-full">
+                                <h4 class="text-primary font-bold text-[15px] mb-1">Head Lamp</h4>
+                                <p class="text-gray-800 text-[13px] font-medium leading-relaxed">Intensitas 8000 Lumens dengan fitur auto-leveling aktif. Dilengkapi DRL untuk visibilitas maksimal.</p>
+                            </div>
+                        </div>
+                        <div class="relative lg:absolute w-full lg:w-[22%] text-left hotspot-text-anim pointer-events-auto" style="top: 41%; left: 85%;">
+                            <div class="bg-gray-200/40 backdrop-blur-md rounded-2xl p-4 border border-white/60 shadow-sm h-full">
+                                <h4 class="text-primary font-bold text-[15px] mb-1">Engine Bay</h4>
+                                <p class="text-gray-800 text-[13px] font-medium leading-relaxed">Menghasilkan output 450 HP dan torsi 600 Nm. Dilengkapi intake serat karbon untuk menjaga efisiensi termal.</p>
+                            </div>
+                        </div>
+                        <div class="relative lg:absolute w-full lg:w-[32%] text-left hotspot-text-anim pointer-events-auto" style="top: 86%; left: 72%;">
+                            <div class="bg-gray-200/40 backdrop-blur-md rounded-2xl p-4 border border-white/60 shadow-sm h-full">
+                                <h4 class="text-primary font-bold text-[15px] mb-1">Tire (Ban)</h4>
+                                <p class="text-gray-800 text-[13px] font-medium leading-relaxed">Ukuran 255/35 R19. Dirancang khusus dengan grip asimetris untuk traksi maksimal menunjang akselerasi instan.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-[0] z-20">
+                <svg class="relative block w-[calc(100%+1.3px)] h-[50px] md:h-[90px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                    <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V0C73.47,31.78,145.41,64.71,219.46,72.63,254.67,76.4,289.47,75.46,321.39,56.44Z" fill="#F8F9FA"></path>
+                </svg>
+            </div>
+        </section>
+
+        <section class="bg-light py-24 px-4 text-center">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-primary mb-6">Mulai tanyakan spesifikasi mobil incaranmu hari ini!</h2>
+                <p class="text-lg md:text-xl text-dark mb-10 font-medium leading-relaxed text-balance">
+                    Mesin AutoSpec sudah siap. Tanyakan detail horsepower, dimensi, hingga konsumsi bahan bakar tanpa harus pusing mencari rangkuman di internet.
+                </p>
+                <a href="/chat.html" class="inline-block bg-primary text-white px-10 py-4 rounded-full text-lg font-bold hover:scale-105 transition-transform duration-300 shadow-lg hover:shadow-primary/40">
+                    Mulai Tanya Sekarang
+                </a>
+            </div>
+        </section>
+
+        <footer class="bg-white pt-16 pb-8 border-t border-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+                    <div class="flex flex-col">
+                        <a href="#" class="flex items-center gap-2 mb-4">
+                            <img src="/assets/images/lucide-lab_tire.png" alt="Autospec Tire Icon" class="w-7 h-7 object-contain mix-blend-multiply" style="filter: brightness(0) saturate(100%) invert(48%) sepia(87%) saturate(1478%) hue-rotate(345deg) brightness(101%) contrast(101%);" />
+                            <span class="text-2xl font-bold text-dark">AUTOSPEC</span>
+                        </a>
+                        <p class="text-dark max-w-sm font-medium leading-relaxed">
+                            Asisten cerdas yang menerjemahkan data teknis kendaraan mentah menjadi spesifikasi standar yang mudah dipahami.
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-8 md:justify-items-end">
+                        <div class="flex flex-col gap-3 md:text-right">
+                            <a href="#" class="text-dark hover:text-primary font-semibold hover:underline decoration-2 underline-offset-4 transition-all w-max md:ml-auto">Beranda</a>
+                            <a href="#cars-part" class="text-dark hover:text-primary font-semibold hover:underline decoration-2 underline-offset-4 transition-all w-max md:ml-auto">Detail Komponen</a>
+                        </div>
+                        <div class="flex flex-col gap-3 md:text-right">
+                            <a href="/chat.html" class="text-primary hover:text-orange-600 font-bold hover:underline decoration-2 underline-offset-4 transition-all w-max md:ml-auto">Coba AUTOSPEC AI</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center text-sm font-semibold gap-4 text-center md:text-left text-dark">
+                    <p>&copy; 2026 AutoSpec. Crafted by Team King Aladin.</p>
+                    <p>Powered by <span class="font-bold text-primary">Gemini 2.5 Flash</span>.</p>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+    
+    </body>
 
 </html>

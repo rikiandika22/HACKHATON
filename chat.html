@@ -5,29 +5,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AUTOSPEC - Chat AI</title>
+    
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- Favicon & Fonts -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#FF5A36',
+                        dark: '#1A1A1A'
+                    }
+                }
+            }
+        }
+    </script>
+    
     <link rel="icon" type="image/png" href="/assets/images/lucide-lab_tire.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <script>
-        // Route Protection: If no token is found, redirect to login page immediately
-        if (!localStorage.getItem('token')) {
-            window.location.replace('/login.html');
-        }
+        // Route Protection (Dimatikan sementara untuk Hackathon agar mudah didemokan)
+        // if (!localStorage.getItem('token')) {
+        //     window.location.replace('/login.html');
+        // }
     </script>
-    <script type="module" src="/src/js/main.js"></script>
+    
     <style>
-        [x-cloak] {
-            display: none !important;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        /* TAMBAHAN: CSS untuk mempercantik Tabel & List dari AI */
+        [x-cloak] { display: none !important; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .markdown-body p { margin-bottom: 0.75rem; }
         .markdown-body strong { font-weight: 700; color: #111827; }
         .markdown-body ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 0.75rem; }
@@ -39,443 +52,139 @@
     </style>
 </head>
 
-<body class="font-sans antialiased text-dark h-screen overflow-hidden flex"
-    style="background: radial-gradient(circle at top, #FFF0ED 0%, #F4F4F5 100%);" x-data="chatInterface()">
+<body class="font-sans antialiased text-dark h-screen overflow-hidden flex" style="background: radial-gradient(circle at top, #FFF0ED 0%, #F4F4F5 100%);" x-data="chatInterface()">
 
-    <!-- Sidebar (Functional & Expandable) -->
-    <aside
-        :class="isSidebarOpen ? 'w-[260px] md:relative absolute bg-white md:bg-white/50 md:backdrop-blur-2xl border-r border-gray-200 md:border-white shadow-[4px_0_30px_rgba(0,0,0,0.1)] md:shadow-[4px_0_30px_rgba(0,0,0,0.05)] pointer-events-auto' : 'w-[72px] md:relative absolute bg-transparent md:bg-white/50 md:backdrop-blur-2xl border-r border-transparent md:border-white shadow-none md:shadow-[2px_0_12px_rgba(0,0,0,0.03)] pointer-events-none md:pointer-events-auto'"
-        class="h-full flex flex-col py-6 shrink-0 z-40 transition-all duration-300 overflow-hidden">
-
-        <div class="flex items-center px-6 mb-6 pointer-events-auto"
-            :class="isSidebarOpen ? 'justify-between' : 'justify-center w-full px-0'">
-            <!-- Hamburger Icon (Trigger) -->
-            <button @click="toggleSidebar()"
-                class="text-gray-600 hover:text-dark flex-shrink-0 transition-transform active:scale-95 bg-white md:bg-transparent p-2 md:p-0 rounded-full shadow-sm md:shadow-none border md:border-transparent border-gray-200">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
-                    </path>
-                </svg>
+    <aside :class="isSidebarOpen ? 'w-[260px] md:relative absolute bg-white md:bg-white/50 md:backdrop-blur-2xl border-r border-gray-200 md:border-white shadow-[4px_0_30px_rgba(0,0,0,0.1)] md:shadow-[4px_0_30px_rgba(0,0,0,0.05)] pointer-events-auto' : 'w-[72px] md:relative absolute bg-transparent md:bg-white/50 md:backdrop-blur-2xl border-r border-transparent md:border-white shadow-none md:shadow-[2px_0_12px_rgba(0,0,0,0.03)] pointer-events-none md:pointer-events-auto'" class="h-full flex flex-col py-6 shrink-0 z-40 transition-all duration-300 overflow-hidden">
+        <div class="flex items-center px-6 mb-6 pointer-events-auto" :class="isSidebarOpen ? 'justify-between' : 'justify-center w-full px-0'">
+            <button @click="toggleSidebar()" class="text-gray-600 hover:text-dark flex-shrink-0 transition-transform active:scale-95 bg-white md:bg-transparent p-2 md:p-0 rounded-full shadow-sm md:shadow-none border md:border-transparent border-gray-200">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
             </button>
-            <!-- New Chat Icon (Visible when open) -->
-            <button x-show="isSidebarOpen" @click="resetChat(); if(window.innerWidth < 768) isSidebarOpen = false"
-                class="block text-gray-600 hover:text-dark p-1 rounded-full hover:bg-gray-100 transition-colors"
-                title="New Chat" x-cloak>
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                </svg>
+            <button x-show="isSidebarOpen" @click="resetChat(); if(window.innerWidth < 768) isSidebarOpen = false" class="block text-gray-600 hover:text-dark p-1 rounded-full hover:bg-gray-100 transition-colors" title="New Chat" x-cloak>
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
             </button>
         </div>
 
-        <!-- New Chat Icon (Visible when closed) -->
         <div class="hidden md:flex justify-center w-full pointer-events-auto" x-show="!isSidebarOpen">
-            <button @click="resetChat()"
-                class="text-gray-600 hover:text-dark mt-2 p-2 rounded-full hover:bg-gray-200 transition-colors"
-                title="New Chat">
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                </svg>
+            <button @click="resetChat()" class="text-gray-600 hover:text-dark mt-2 p-2 rounded-full hover:bg-gray-200 transition-colors" title="New Chat">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
             </button>
         </div>
 
-        <!-- History List (Visible when open) -->
-        <div x-show="isSidebarOpen" x-transition.opacity.duration.300ms
-            class="flex flex-1 overflow-y-auto w-[260px] px-4 mt-2 flex-col gap-1 pointer-events-auto" x-cloak>
+        <div x-show="isSidebarOpen" x-transition.opacity.duration.300ms class="flex flex-1 overflow-y-auto w-[260px] px-4 mt-2 flex-col gap-1 pointer-events-auto" x-cloak>
             <h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2 px-2">History</h3>
             <template x-for="item in chatHistory" :key="item.id">
-                <div
-                    class="group relative flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-100 transition-colors text-sm text-gray-700 font-medium cursor-pointer">
-
-                    <div class="flex items-center gap-3 overflow-hidden flex-1"
-                        @click="if(!item.editing) { setDirectInput(item.title); if(window.innerWidth < 768) isSidebarOpen = false }">
-                        <svg class="w-4 h-4 text-gray-500 shrink-0" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
-                            </path>
-                        </svg>
-
+                <div class="group relative flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-100 transition-colors text-sm text-gray-700 font-medium cursor-pointer">
+                    <div class="flex items-center gap-3 overflow-hidden flex-1" @click="if(!item.editing) { setDirectInput(item.title); if(window.innerWidth < 768) isSidebarOpen = false }">
+                        <svg class="w-4 h-4 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                         <span x-show="!item.editing" class="truncate" x-text="item.title"></span>
-                        <input x-show="item.editing" type="text" :value="item.title" @click.stop
-                            @blur="finishEdit(item, $event)" @keydown.enter="finishEdit(item, $event)"
-                            class="bg-white border border-gray-300 rounded px-2 py-0.5 text-sm w-full outline-none"
-                            :id="'editInput' + item.id">
+                        <input x-show="item.editing" type="text" :value="item.title" @click.stop @blur="finishEdit(item, $event)" @keydown.enter="finishEdit(item, $event)" class="bg-white border border-gray-300 rounded px-2 py-0.5 text-sm w-full outline-none" :id="'editInput' + item.id">
                     </div>
-
-                    <!-- Actions -->
-                    <div class="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity pl-2 shrink-0 bg-transparent"
-                        x-show="!item.editing">
-                        <button
-                            @click.stop="startEdit(item); $nextTick(() => document.getElementById('editInput' + item.id).focus())"
-                            class="p-1 text-gray-400 hover:text-blue-600 transition-colors" title="Rename">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
-                                </path>
-                            </svg>
-                        </button>
-                        <button @click.stop="deleteHistory(item.id)"
-                            class="p-1 text-gray-400 hover:text-red-500 transition-colors" title="Delete">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                </path>
-                            </svg>
-                        </button>
+                    <div class="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity pl-2 shrink-0 bg-transparent" x-show="!item.editing">
+                        <button @click.stop="startEdit(item); $nextTick(() => document.getElementById('editInput' + item.id).focus())" class="p-1 text-gray-400 hover:text-blue-600 transition-colors" title="Rename"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
+                        <button @click.stop="deleteHistory(item.id)" class="p-1 text-gray-400 hover:text-red-500 transition-colors" title="Delete"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
                     </div>
-
                 </div>
             </template>
         </div>
     </aside>
 
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col h-full relative"
-        style="background: radial-gradient(circle at center top, #FFF0ED 0%, #F4F4F5 100%);">
-
-        <!-- Header -->
+    <main class="flex-1 flex flex-col h-full relative" style="background: radial-gradient(circle at center top, #FFF0ED 0%, #F4F4F5 100%);">
         <header class="h-20 px-8 flex items-center justify-between shrink-0">
-            <!-- Left: Logo (visible in filled state) -->
             <div class="flex-1 flex items-center pl-10 md:pl-0">
                 <div x-show="isChatFilled" class="flex items-center gap-3" x-cloak>
-                    <img src="/assets/images/lucide-lab_tire.png" alt="Autospec Logo"
-                        class="chat-logo-anim w-7 h-7 filter invert-50 sepia-100 saturate-[4000%] hue-rotate-350 brightness-110 contrast-110"
-                        style="filter: brightness(0) saturate(100%) invert(48%) sepia(87%) saturate(1478%) hue-rotate(345deg) brightness(101%) contrast(101%);" />
+                    <img src="/assets/images/lucide-lab_tire.png" alt="Autospec Logo" class="chat-logo-anim w-7 h-7 filter invert-50 sepia-100 saturate-[4000%] hue-rotate-350 brightness-110 contrast-110" style="filter: brightness(0) saturate(100%) invert(48%) sepia(87%) saturate(1478%) hue-rotate(345deg) brightness(101%) contrast(101%);" />
                     <span class="hidden md:inline text-lg font-bold tracking-tight text-dark">AUTOSPEC</span>
                 </div>
             </div>
-
-            <!-- Center: Topic Title (visible only in filled state) -->
             <div class="flex-1 flex justify-center">
-                <h1 x-show="isChatFilled" class="font-bold text-gray-800 text-base md:text-[17px] text-center" x-cloak>
-                    Cek Spek Mesin</h1>
+                <h1 x-show="isChatFilled" class="font-bold text-gray-800 text-base md:text-[17px] text-center" x-cloak>Tanya AUTOSPEC</h1>
             </div>
-
-            <!-- Right: Profile Icon & Dropdown -->
             <div class="flex-1 flex justify-end relative" x-data="{ showDropdown: false }">
-                <!-- User Initial Icon -->
-                <button @click="showDropdown = !showDropdown" @click.away="showDropdown = false"
-                    class="w-10 h-10 rounded-full border-2 border-[#FF5A36] flex items-center justify-center text-dark font-bold text-lg hover:bg-gray-100 transition-colors focus:outline-none">
+                <button @click="showDropdown = !showDropdown" @click.away="showDropdown = false" class="w-10 h-10 rounded-full border-2 border-[#FF5A36] flex items-center justify-center text-dark font-bold text-lg hover:bg-gray-100 transition-colors focus:outline-none">
                     <span x-text="(currentUser.full_name || 'A').charAt(0).toUpperCase()"></span>
                 </button>
-
-                <!-- Glassmorphic Dropdown -->
-                <div x-show="showDropdown" x-transition:enter="transition ease-out duration-200"
-                    x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                    x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
-                    x-transition:leave-end="opacity-0 scale-95"
-                    class="absolute top-12 right-0 mt-2 w-48 bg-white/80 backdrop-blur-xl border border-white/60 rounded-xl shadow-[0_8px_32px_0_rgba(31,38,135,0.05)] py-2 z-50 overflow-hidden"
-                    x-cloak>
-                    <!-- User Info Section -->
+                <div x-show="showDropdown" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="absolute top-12 right-0 mt-2 w-48 bg-white/80 backdrop-blur-xl border border-white/60 rounded-xl shadow-[0_8px_32px_0_rgba(31,38,135,0.05)] py-2 z-50 overflow-hidden" x-cloak>
                     <div class="px-4 py-2 border-b border-gray-200">
                         <p class="text-sm font-semibold text-gray-800" x-text="currentUser.full_name || 'User'"></p>
                         <p class="text-xs text-gray-500" x-text="currentUser.email || 'user@autospec.id'"></p>
                     </div>
-                    <!-- Actions -->
-                    <button @click="logout()"
-                        class="w-full flex px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 hover:bg-opacity-80 transition-colors items-center gap-2 mt-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
-                            </path>
-                        </svg>
+                    <button @click="logout()" class="w-full flex px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 hover:bg-opacity-80 transition-colors items-center gap-2 mt-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                         Logout
                     </button>
                 </div>
             </div>
         </header>
 
-        <!-- Empty State Container -->
-        <div x-show="!isChatFilled"
-            class="flex-1 flex flex-col items-center justify-start md:justify-center px-4 md:px-8 w-full max-w-4xl mx-auto md:-mt-10 overflow-y-auto pt-6 md:pt-0"
-            x-cloak>
-
+        <div x-show="!isChatFilled" class="flex-1 flex flex-col items-center justify-start md:justify-center px-4 md:px-8 w-full max-w-4xl mx-auto md:-mt-10 overflow-y-auto pt-6 md:pt-0" x-cloak>
             <div class="flex items-center gap-3 mb-6 shrink-0">
-                <img src="/assets/images/lucide-lab_tire.png"
-                    class="chat-logo-anim w-10 h-10 filter invert-50 sepia-100 saturate-[4000%] hue-rotate-350 brightness-110 contrast-110"
-                    style="filter: brightness(0) saturate(100%) invert(48%) sepia(87%) saturate(1478%) hue-rotate(345deg) brightness(101%) contrast(101%);">
+                <img src="/assets/images/lucide-lab_tire.png" class="chat-logo-anim w-10 h-10 filter invert-50 sepia-100 saturate-[4000%] hue-rotate-350 brightness-110 contrast-110" style="filter: brightness(0) saturate(100%) invert(48%) sepia(87%) saturate(1478%) hue-rotate(345deg) brightness(101%) contrast(101%);">
                 <h2 class="text-2xl md:text-3xl tracking-tight text-dark font-semibold">AUTOSPEC</h2>
             </div>
+            <p class="text-gray-500 font-medium mb-10 text-center text-[15.5px]">Halo! Mobil apa yang ingin kita bongkar spesifikasi lengkapnya hari ini?</p>
 
-            <p class="text-gray-500 font-medium mb-10 text-center text-[15.5px]">Halo! Mobil apa yang ingin kita bongkar
-                spesifikasi lengkapnya hari ini?</p>
-
-            <!-- Big Input Box for Empty State -->
-            <div class="w-full bg-white/70 backdrop-blur-2xl border border-white rounded-[1.5rem] p-4 shadow-[0_12px_40px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_50px_rgba(0,0,0,0.08)] transition-shadow relative mb-12 flex flex-col"
-                style="min-height: 150px;">
-                <textarea x-model="inputText" @keydown.enter.prevent="sendMessage()"
-                    class="w-full bg-transparent resize-none outline-none text-gray-800 placeholder-gray-500 font-medium px-2 py-1 flex-1 text-[15px]"
-                    placeholder="Tanya apapun"></textarea>
-
+            <div class="w-full bg-white/70 backdrop-blur-2xl border border-white rounded-[1.5rem] p-4 shadow-[0_12px_40px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_50px_rgba(0,0,0,0.08)] transition-shadow relative mb-12 flex flex-col" style="min-height: 150px;">
+                <textarea x-model="inputText" @keydown.enter.prevent="sendMessage()" class="w-full bg-transparent resize-none outline-none text-gray-800 placeholder-gray-500 font-medium px-2 py-1 flex-1 text-[15px]" placeholder="Tanya apapun..."></textarea>
                 <div class="flex justify-between items-center mt-2 px-1">
                     <div class="flex items-center gap-2 text-gray-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
-                            </path>
-                        </svg>
-                        <span class="text-[13px] font-semibold">Deep Seek R1</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                        <span class="text-[13px] font-semibold">Gemini AI</span>
                     </div>
-                    <!-- Send Button, properly centered horizontally and vertically -->
-                    <button @click="sendMessage()"
-                        class="bg-[#FF5A36] text-white w-10 h-10 flex items-center justify-center rounded-full hover:bg-orange-600 transition-colors shadow-sm">
-                        <svg class="w-4 h-4 ml-[-2px] -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                        </svg>
+                    <button @click="sendMessage()" class="bg-[#FF5A36] text-white w-10 h-10 flex items-center justify-center rounded-full hover:bg-orange-600 transition-colors shadow-sm">
+                        <svg class="w-4 h-4 ml-[-2px] -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
                     </button>
                 </div>
             </div>
 
-            <!-- Recommendations Grid -->
             <div class="w-full">
-                <h3 class="text-gray-700 font-bold mb-4 px-1 text-[15px]" x-show="showCards"
-                    x-transition:enter="transition ease-out duration-500"
-                    x-transition:enter-start="opacity-0 translate-y-4"
-                    x-transition:enter-end="opacity-100 translate-y-0" x-cloak>
-                    Rekomendasi Topik
-                </h3>
+                <h3 class="text-gray-700 font-bold mb-4 px-1 text-[15px]" x-show="showCards" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-cloak>Rekomendasi Topik</h3>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-
-                    <button x-show="showCards" x-transition:enter="transition ease-out duration-500 delay-[100ms]"
-                        x-transition:enter-start="opacity-0 translate-y-8"
-                        x-transition:enter-end="opacity-100 translate-y-0" x-cloak
-                        @click="setDirectInput('Tolong cek spek mesin Toyota Supra dong. Katanya 3.0L twin-turbo itu tenaganya gede banget, beneran nyampe 300 cc? Boros bensin gak buat harian?')"
-                        class="bg-white/50 backdrop-blur-2xl border border-white p-5 rounded-2xl text-left hover:bg-white/70 transition-all outline-none h-full flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+                    <button x-show="showCards" x-transition:enter="transition ease-out duration-500 delay-[100ms]" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0" x-cloak @click="setDirectInput('Tolong cek spek mesin Toyota Supra dong. Katanya 3.0L twin-turbo itu tenaganya gede banget?')" class="bg-white/50 backdrop-blur-2xl border border-white p-5 rounded-2xl text-left hover:bg-white/70 transition-all outline-none h-full flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
                         <div class="flex items-center gap-2.5 font-bold text-gray-900 mb-2.5 text-[14px]">
-                            <span class="bg-white/80 p-1.5 rounded-full shadow-sm">
-                                <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-                                    </path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                </svg>
-                            </span>
+                            <span class="bg-white/80 p-1.5 rounded-full shadow-sm"><svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg></span>
                             Ekstraksi Mesin
                         </div>
-                        <p class="text-[13px] text-gray-700 leading-snug font-medium pr-2 mt-auto">Cek tenaga (HP),
-                            torsi, dan
-                            konversi cc secara instan.</p>
+                        <p class="text-[13px] text-gray-700 leading-snug font-medium pr-2 mt-auto">Cek tenaga (HP) dan spesifikasi.</p>
                     </button>
-
-                    <button x-show="showCards" x-transition:enter="transition ease-out duration-500 delay-[200ms]"
-                        x-transition:enter-start="opacity-0 translate-y-8"
-                        x-transition:enter-end="opacity-100 translate-y-0" x-cloak
-                        @click="setDirectInput('Berapa panjang dan lebar Honda Civic RS 2023?')"
-                        class="bg-white/50 backdrop-blur-2xl border border-white p-5 rounded-2xl text-left hover:bg-white/70 transition-all outline-none h-full flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
-                        <div class="flex items-center gap-2.5 font-bold text-gray-900 mb-2.5 text-[14px]">
-                            <span class="bg-white/80 p-1.5 rounded-full shadow-sm">
-                                <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4">
-                                    </path>
-                                </svg>
-                            </span>
-                            Dimensi Bodi
-                        </div>
-                        <p class="text-[13px] text-gray-700 leading-snug font-medium pr-2 mt-auto">Ketahui panjang,
-                            lebar, dan
-                            wheelbase untuk fitment.</p>
-                    </button>
-
-                    <button x-show="showCards" x-transition:enter="transition ease-out duration-500 delay-[300ms]"
-                        x-transition:enter-start="opacity-0 translate-y-8"
-                        x-transition:enter-end="opacity-100 translate-y-0" x-cloak
-                        @click="setDirectInput('Berapa konsumsi bensin rata-rata Mazda CX-5 di dalam kota?')"
-                        class="bg-white/50 backdrop-blur-2xl border border-white p-5 rounded-2xl text-left hover:bg-white/70 transition-all outline-none h-full flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
-                        <div class="flex items-center gap-2.5 font-bold text-gray-900 mb-2.5 text-[14px]">
-                            <span class="bg-white/80 p-1.5 rounded-full shadow-sm">
-                                <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z">
-                                    </path>
-                                </svg>
-                            </span>
-                            Konsumsi BBM
-                        </div>
-                        <p class="text-[13px] text-gray-700 leading-snug font-medium pr-2 mt-auto">Analisis efisiensi
-                            bahan
-                            bakar dalam dan luar kota (MPG).</p>
-                    </button>
-
-                    <button x-show="showCards" x-transition:enter="transition ease-out duration-500 delay-[400ms]"
-                        x-transition:enter-start="opacity-0 translate-y-8"
-                        x-transition:enter-end="opacity-100 translate-y-0" x-cloak
-                        @click="setDirectInput('Apakah velg ring 18 muat di Brio?')"
-                        class="bg-white/50 backdrop-blur-2xl border border-white p-5 rounded-2xl text-left hover:bg-white/70 transition-all outline-none h-full flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
-                        <div class="flex items-center gap-2.5 font-bold text-gray-900 mb-2.5 text-[14px]">
-                            <span class="bg-white/80 p-1.5 rounded-full shadow-sm">
-                                <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-                                    </path>
-                                </svg>
-                            </span>
-                            Kompatibilitas Parts
-                        </div>
-                        <p class="text-[13px] text-gray-700 leading-snug font-medium pr-2 mt-auto">Cek kecocokan
-                            komponen
-                            aftermarket dengan spesifikasi bawaan pabrik.</p>
-                    </button>
-
-                    <button x-show="showCards" x-transition:enter="transition ease-out duration-500 delay-[500ms]"
-                        x-transition:enter-start="opacity-0 translate-y-8"
-                        x-transition:enter-end="opacity-100 translate-y-0" x-cloak
-                        @click="setDirectInput('Apa saja rekomendasi modifikasi awal untuk performa Innova Reborn Diesel?')"
-                        class="bg-white/50 backdrop-blur-2xl border border-white p-5 rounded-2xl text-left hover:bg-white/70 transition-all outline-none h-full flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
-                        <div class="flex items-center gap-2.5 font-bold text-gray-900 mb-2.5 text-[14px]">
-                            <span class="bg-white/80 p-1.5 rounded-full shadow-sm">
-                                <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 10V3L4 14h7v7l9-11h-7z">
-                                    </path>
-                                </svg>
-                            </span>
-                            Tips Modifikasi Performa
-                        </div>
-                        <p class="text-[13px] text-gray-700 leading-snug font-medium pr-2 mt-auto">Temukan setingan awal
-                            terbaik khusus untuk mobil Anda.</p>
-                    </button>
-
-                    <button x-show="showCards" x-transition:enter="transition ease-out duration-500 delay-[600ms]"
-                        x-transition:enter-start="opacity-0 translate-y-8"
-                        x-transition:enter-end="opacity-100 translate-y-0" x-cloak
-                        @click="setDirectInput('Kapan waktu ideal ganti oli transmisi matic CVT mobil Jepang?')"
-                        class="bg-white/50 backdrop-blur-2xl border border-white p-5 rounded-2xl text-left hover:bg-white/70 transition-all outline-none h-full flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
-                        <div class="flex items-center gap-2.5 font-bold text-gray-900 mb-2.5 text-[14px]">
-                            <span class="bg-white/80 p-1.5 rounded-full shadow-sm">
-                                <svg class="w-4 h-4 text-teal-500" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
-                                    </path>
-                                </svg>
-                            </span>
-                            Jadwal Maintenance
-                        </div>
-                        <p class="text-[13px] text-gray-700 leading-snug font-medium pr-2 mt-auto">Panduan servis rutin
-                            dan penggantian fluida mesin.</p>
-                    </button>
-
-                    <button x-show="showCards" x-transition:enter="transition ease-out duration-500 delay-[700ms]"
-                        x-transition:enter-start="opacity-0 translate-y-8"
-                        x-transition:enter-end="opacity-100 translate-y-0" x-cloak
-                        @click="setDirectInput('Tolong komparasi fitur safety antara Hyundai Creta dan Honda HR-V tipe tertinggi.')"
-                        class="bg-white/50 backdrop-blur-2xl border border-white p-5 rounded-2xl text-left hover:bg-white/70 transition-all outline-none h-full flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
-                        <div class="flex items-center gap-2.5 font-bold text-gray-900 mb-2.5 text-[14px]">
-                            <span class="bg-white/80 p-1.5 rounded-full shadow-sm">
-                                <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
-                                    </path>
-                                </svg>
-                            </span>
-                            Komparasi Mobil Baru
-                        </div>
-                        <p class="text-[13px] text-gray-700 leading-snug font-medium pr-2 mt-auto">Bandingkan fitur,
-                            tipe mesin, dan keselamatan dua mobil.</p>
-                    </button>
-
-                    <button x-show="showCards" x-transition:enter="transition ease-out duration-500 delay-[800ms]"
-                        x-transition:enter-start="opacity-0 translate-y-8"
-                        x-transition:enter-end="opacity-100 translate-y-0" x-cloak
-                        @click="setDirectInput('Apa itu sistem Hybrid (HEV) dan kelebihannya dibanding mobil bensin biasa?')"
-                        class="bg-white/50 backdrop-blur-2xl border border-white p-5 rounded-2xl text-left hover:bg-white/70 transition-all outline-none h-full flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
-                        <div class="flex items-center gap-2.5 font-bold text-gray-900 mb-2.5 text-[14px]">
-                            <span class="bg-white/80 p-1.5 rounded-full shadow-sm">
-                                <svg class="w-4 h-4 text-pink-500" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
-                                    </path> <!-- Repurposing icon for now -->
-                                </svg>
-                            </span>
-                            Edukasi Istilah Otomotif
-                        </div>
-                        <p class="text-[13px] text-gray-700 leading-snug font-medium pr-2 mt-auto">Penjelasan mudah
-                            dipahami terkait teknologi mesin terbaru.</p>
-                    </button>
-
-                </div>
+                    </div>
             </div>
         </div>
 
-        <!-- Filled State Container -->
         <div x-show="isChatFilled" class="flex-1 flex flex-col w-full max-w-[850px] mx-auto relative pt-4 min-h-0 overflow-hidden" x-cloak>
-
-            <!-- Chat History Area -->
             <div class="flex-1 overflow-y-auto w-full px-4 pb-40 flex flex-col gap-6" id="chat-container">
                 <template x-for="msg in messages" :key="msg.id">
-                    <div class="flex w-full"
-                        :class="{'justify-end': msg.role === 'user', 'justify-start': msg.role === 'ai'}">
-
-                        <!-- User Bubble -->
-                        <div x-show="msg.role === 'user'"
-                            class="bg-[#FFDCCB] text-gray-900 px-6 py-4 rounded-2xl rounded-tr-none max-w-[80%] shadow-sm">
+                    <div class="flex w-full" :class="{'justify-end': msg.role === 'user', 'justify-start': msg.role === 'ai'}">
+                        <div x-show="msg.role === 'user'" class="bg-[#FFDCCB] text-gray-900 px-6 py-4 rounded-2xl rounded-tr-none max-w-[80%] shadow-sm">
                             <p class="text-[15px] font-medium leading-[1.6]" x-text="msg.content"></p>
                         </div>
-
-                        <!-- AI Bubble -->
-                        <div x-show="msg.role === 'ai'"
-                            class="bg-[#E5E7EB] text-gray-900 px-6 py-4 rounded-2xl rounded-tl-none max-w-[80%] shadow-sm overflow-x-auto">
+                        <div x-show="msg.role === 'ai'" class="bg-[#E5E7EB] text-gray-900 px-6 py-4 rounded-2xl rounded-tl-none max-w-[80%] shadow-sm overflow-x-auto">
                             <div class="markdown-body" x-html="marked.parse(msg.content)"></div>
                         </div>
                     </div>
                 </template>
-
-                <!-- Status indicator -->
                 <div x-show="isTyping" class="flex w-full justify-start mt-2 pb-2">
-                    <div
-                        class="bg-[#E5E7EB] text-dark px-5 py-4 rounded-2xl rounded-tl-none flex items-center gap-1.5 shadow-sm">
+                    <div class="bg-[#E5E7EB] text-dark px-5 py-4 rounded-2xl rounded-tl-none flex items-center gap-1.5 shadow-sm">
                         <div class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce"></div>
-                        <div class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0.1s">
-                        </div>
-                        <div class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0.2s">
-                        </div>
+                        <div class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                        <div class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Sticky Input Box for Filled State (bottom) -->
-            <!-- We will absolute position it at the bottom. -->
             <div class="absolute bottom-10 left-0 w-full px-4 bg-gradient-to-t from-[#F0F2F5] via-[#F0F2F5] pt-4">
-                <div class="w-full bg-transparent border border-gray-300 rounded-[1.5rem] p-3 shadow-sm relative flex flex-col justify-between"
-                    style="min-height: 120px;">
-                    <textarea x-model="inputText" @keydown.enter.prevent="sendMessage()"
-                        class="w-full bg-transparent resize-none outline-none text-gray-800 placeholder-gray-500 font-medium px-3 py-1 flex-1 text-[15px]"
-                        placeholder="Tanyakan Spek Mobilmu...."></textarea>
-
+                <div class="w-full bg-transparent border border-gray-300 rounded-[1.5rem] p-3 shadow-sm relative flex flex-col justify-between" style="min-height: 120px;">
+                    <textarea x-model="inputText" @keydown.enter.prevent="sendMessage()" class="w-full bg-transparent resize-none outline-none text-gray-800 placeholder-gray-500 font-medium px-3 py-1 flex-1 text-[15px]" placeholder="Tanyakan Spek Mobilmu...."></textarea>
                     <div class="flex justify-between items-center mt-1 px-2">
                         <div class="flex items-center gap-2 text-gray-400">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
-                                </path>
-                            </svg>
-                            <span class="text-[13px] font-semibold">Deep Seek R1</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                            <span class="text-[13px] font-semibold">Gemini AI</span>
                         </div>
-                        <button @click="sendMessage()"
-                            class="bg-[#FF5A36] text-white w-10 h-10 flex items-center justify-center rounded-full hover:bg-orange-600 transition-colors shadow-sm">
-                            <svg class="w-4 h-4 ml-[-2px] -rotate-45" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                            </svg>
+                        <button @click="sendMessage()" class="bg-[#FF5A36] text-white w-10 h-10 flex items-center justify-center rounded-full hover:bg-orange-600 transition-colors shadow-sm">
+                            <svg class="w-4 h-4 ml-[-2px] -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
                         </button>
                     </div>
                 </div>
             </div>
-
         </div>
     </main>
 
@@ -488,113 +197,38 @@
                 inputText: '',
                 isTyping: false,
                 messages: [],
-                chatHistory: [
-                    { id: 1, title: 'Cek Spek Mesin Supra', editing: false },
-                    { id: 2, title: 'Dimensi Bodi Civic RS', editing: false },
-                    { id: 3, title: 'Konsumsi BBM Mazda CX-5', editing: false }
-                ],
+                chatHistory: [],
                 showCards: false,
 
                 init() {
-                    // Trigger staggered card animation after a brief delay
-                    setTimeout(() => {
-                        this.showCards = true;
-                    }, 100);
-
-                    // Trigger logo animation directly if GSAP is available
-                    if (window.gsap) {
-                        const logoTire = document.querySelectorAll('.chat-logo-anim');
-                        gsap.fromTo(logoTire, { x: -30, opacity: 0 }, { x: 15, opacity: 1, duration: 0.6, ease: "power2.out" });
-                        gsap.to(logoTire, { x: -10, duration: 0.3, ease: "power1.inOut", delay: 0.6 });
-                        gsap.to(logoTire, { x: 0, duration: 0.4, ease: "power2.out", delay: 0.9 });
-                    }
+                    setTimeout(() => { this.showCards = true; }, 100);
                 },
-
-                toggleSidebar() {
-                    this.isSidebarOpen = !this.isSidebarOpen;
-                },
-
-                deleteHistory(id) {
-                    this.chatHistory = this.chatHistory.filter(c => c.id !== id);
-                },
+                toggleSidebar() { this.isSidebarOpen = !this.isSidebarOpen; },
                 logout() {
                     localStorage.removeItem('token');
                     localStorage.removeItem('user');
                     window.location.href = '/login.html';
                 },
-
-                startEdit(item) {
-                    item.editing = true;
-                },
-
-                finishEdit(item, event) {
-                    item.title = event.target.value || item.title;
-                    item.editing = false;
-                },
-
-                resetChat() {
-                    this.isChatFilled = false;
-                    this.messages = [];
-                    this.inputText = '';
-                    setTimeout(() => {
-                        this.showCards = true;
-                    }, 100);
-                },
-
                 setDirectInput(text) {
                     this.inputText = text;
-                    this.$nextTick(() => {
-                        this.sendMessage();
-                    });
+                    this.$nextTick(() => { this.sendMessage(); });
                 },
-
                 sendMessage() {
                     if (!this.inputText.trim() || this.isTyping) return;
-
                     if (!this.isChatFilled) {
                         this.isChatFilled = true;
                         this.showCards = false;
-                        if (window.innerWidth < 768) {
-                            this.isSidebarOpen = false;
-                        }
                     }
 
                     const query = this.inputText.trim();
-                    const userMsg = { id: Date.now(), role: 'user', content: query };
-                    this.messages.push(userMsg);
-
+                    this.messages.push({ id: Date.now(), role: 'user', content: query });
                     this.inputText = '';
                     this.isTyping = true;
-
                     this.scrollToBottom();
 
-                    // Mock AI response
-                    // setTimeout(() => {
-                    //     let aiResponse = "Saya adalah AI dari AUTOSPEC. Pembaruan Anda berhasil masuk, referensi desain UI (empty dan filled state) telah diterapkan sempurna.";
-
-                    //     if (query.toLowerCase().includes('supra') || query.toLowerCase().includes('ekstraksi')) {
-                    //         // Mimicking exact text from the screenshot
-                    //         aiResponse = "Berdasarkan data pabrikan, Toyota Supra dibekali mesin legendaris 6-silinder segaris (In-line 6). Sistem kami mendeteksi anomali pada pertanyaan Anda dan telah menormalisasi kapasitas mesin menjadi 3000 cc (3.0L). Tenaga standar pabriknya adalah 320 Horsepower (HP) berkat dukungan Twin-Turbo. Untuk efisiensi penggunaan harian (City MPG), konsumsinya berada di kisaran 17 MPG.";
-                    //     } else if (query.toLowerCase().includes('civic') || query.toLowerCase().includes('dimensi')) {
-                    //         aiResponse = "Honda Civic RS 2023 memiliki panjang keseluruhan 4.678 mm, lebar 1.802 mm, dan tinggi 1.415 mm. Jarak sumbu rodanya (wheelbase) adalah 2.735 mm yang menjanjikan legroom luas.";
-                    //     } else if (query.toLowerCase().includes('bbm') || query.toLowerCase().includes('mazda')) {
-                    //         aiResponse = "Mazda CX-5 (2023) 2.5L FWD memiliki efisiensi bahan bakar rata-rata sekitar 24 MPG (sekitar 10,2 km/L) untuk rute dalam kota, dan 30 MPG (sekitar 12,7 km/L) untuk rute jalan tol.";
-                    //     } else if (query.toLowerCase().includes('velg') || query.toLowerCase().includes('brio') || query.toLowerCase().includes('kompatibilitas')) {
-                    //         aiResponse = "Secara teknis, velg Ring 18 (R18) bisa dipasang di Honda Brio, namun ini tergolong 'over-spec' untuk harian. Anda harus menggunakan profil ban sangat tipis (misal 205/35 R18) agar tidak menggesek spakbor. Namun perlu diingat hal ini akan drastis mengurangi kenyamanan bantingan suspensi dan memberatkan putaran mesin awal.";
-                    //     }
-
-                    //     this.messages.push({ id: Date.now(), role: 'ai', content: aiResponse });
-                    //     this.isTyping = false;
-
-                    //     this.scrollToBottom();
-                    // }, 1200);
-
-                    // Call FastAPI backend
-                    fetch('http://127.0.0.1:8001/api/chat', {
+                    fetch('/api/chat', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ message: query })
                     })
                     .then(response => response.json())
@@ -610,18 +244,14 @@
                         this.scrollToBottom();
                     });
                 },
-
                 scrollToBottom() {
                     this.$nextTick(() => {
                         const container = document.getElementById('chat-container');
-                        if (container) {
-                            container.scrollTop = container.scrollHeight;
-                        }
+                        if (container) container.scrollTop = container.scrollHeight;
                     });
                 }
             }));
         });
     </script>
 </body>
-
 </html>

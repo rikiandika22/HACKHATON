@@ -1,0 +1,58 @@
+# 1. DEPLOYMENT: Mengambil image dari Docker Hub dan menjalankannya
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hackathon-ai-deployment
+  namespace: king-aladin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hackathon-ai
+  template:
+    metadata:
+      labels:
+        app: hackathon-ai
+    spec:
+      containers:
+      - name: hackathon-ai-container
+        image: raflidoc123/hackathon-ai:v9
+        ports:
+        - containerPort: 8001
+          name: http
+
+---
+# 2. SERVICE: Membuka jalur komunikasi di dalam server
+apiVersion: v1
+kind: Service
+metadata:
+  name: hackathon-ai-service
+  namespace: king-aladin
+spec:
+  selector:
+    app: hackathon-ai
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8001
+
+---
+# 3. INGRESS: Menghubungkan aplikasi ke domain publik
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hackathon-ai-ingress
+  namespace: king-aladin
+spec:
+  ingressClassName: traefik  # <--- Ini tambahan barunya
+  rules:
+  - host: king-aladin.hackathon.sev-2.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: hackathon-ai-service
+            port:
+              number: 80
